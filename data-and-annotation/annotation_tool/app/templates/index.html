@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VocalGrad Annotation Tool</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section id="login-screen" class="panel">
+        <h1>VocalGrad Manual Annotation</h1>
+        <p class="muted">Shared manifest: {{ manifest_name }}</p>
+        <label for="user-id">User ID</label>
+        <input id="user-id" type="text" autocomplete="username" placeholder="annotator_01" />
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" />
+        <button id="login-button" type="button">Log In</button>
+        <p id="login-error" class="error hidden"></p>
+      </section>
+
+      <section id="annotation-screen" class="panel hidden">
+        <div class="top-bar">
+          <div>
+            <h2 id="annotator-title">Annotation</h2>
+            <p id="annotator-subtitle" class="muted"></p>
+          </div>
+          <button id="logout-button" type="button" class="secondary-button">Log Out</button>
+        </div>
+
+        <div class="progress-grid">
+          <div class="progress-card">
+            <p class="eyebrow">Category Progress</p>
+            <p id="category-progress" class="metric"></p>
+          </div>
+          <div class="progress-card">
+            <p class="eyebrow">Overall Progress</p>
+            <p id="overall-progress" class="metric"></p>
+          </div>
+        </div>
+
+        <div class="prompt-box">
+          <p id="prompt-text" class="prompt"></p>
+        </div>
+
+        <audio id="audio-element" preload="none"></audio>
+        <div class="controls">
+          <button id="play-button" type="button">Play</button>
+        </div>
+
+        <div class="answer-group">
+          <button id="answer-increase" class="answer-button" type="button" data-label="increase">
+            increase
+          </button>
+          <button id="answer-decrease" class="answer-button" type="button" data-label="decrease">
+            decrease
+          </button>
+        </div>
+
+        <button id="submit-button" type="button" disabled>Submit</button>
+        <p id="annotation-error" class="error hidden"></p>
+      </section>
+
+      <section id="category-transition-screen" class="panel hidden">
+        <div class="top-bar">
+          <div>
+            <h2 id="transition-title">Category Changed</h2>
+            <p id="transition-subtitle" class="muted"></p>
+          </div>
+          <button id="logout-button-transition" type="button" class="secondary-button">
+            Log Out
+          </button>
+        </div>
+
+        <div class="prompt-box">
+          <p id="transition-message" class="prompt"></p>
+        </div>
+
+        <button id="transition-continue-button" type="button">Continue</button>
+      </section>
+
+      <section id="completion-screen" class="panel hidden">
+        <div class="top-bar">
+          <div>
+            <h2>Annotation Complete</h2>
+            <p id="completion-subtitle" class="muted"></p>
+          </div>
+          <button id="logout-button-complete" type="button" class="secondary-button">Log Out</button>
+        </div>
+        <div id="summary-root"></div>
+      </section>
+
+      <section id="admin-screen" class="panel hidden">
+        <div class="top-bar">
+          <div>
+            <h2>Admin Dashboard</h2>
+            <p id="admin-subtitle" class="muted"></p>
+          </div>
+          <button id="logout-button-admin" type="button" class="secondary-button">Log Out</button>
+        </div>
+
+        <div class="admin-actions">
+          <button id="refresh-admin-button" type="button">Refresh Dashboard</button>
+          <button id="bulk-download-button" type="button">Download All Raw JSONL</button>
+          <select id="admin-summary-mode">
+            <option value="overall">Overall</option>
+            <option value="difficulty">By Tier</option>
+            <option value="trajectory">By Trajectory</option>
+          </select>
+          <select id="admin-summary-value" class="hidden"></select>
+        </div>
+
+        <div class="admin-actions">
+          <select id="reset-user-select"></select>
+          <button id="reset-user-button" type="button" class="danger-button">
+            Reset Selected User Data
+          </button>
+        </div>
+        <p id="admin-error" class="error hidden"></p>
+        <div id="admin-root"></div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

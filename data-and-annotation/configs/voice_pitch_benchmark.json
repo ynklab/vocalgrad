@@ -1,0 +1,38 @@
+{
+  "step_duration_sec": 0.05,
+  "context_duration_sec": 0.05,
+  "jump_at": 0.5,
+  "crossfade_duration_sec": 0.005,
+  "tiers": {
+    "low": {
+      "delta_steps": 1.0
+    },
+    "mid": {
+      "delta_steps": 2.0
+    },
+    "high": {
+      "delta_steps": 3.0
+    }
+  },
+  "curves": {
+    "linear": {
+      "mode": "linear"
+    },
+    "quad_first_flat": {
+      "mode": "quad_first_flat"
+    },
+    "quad_last_flat": {
+      "mode": "quad_last_flat"
+    },
+    "jump": {
+      "mode": "jump"
+    }
+  },
+  "pitch_shift_kwargs": {
+    "bins_per_octave": 12,
+    "res_type": "soxr_hq",
+    "scale": false,
+    "n_fft": 512,
+    "hop_length": 128
+  }
+}

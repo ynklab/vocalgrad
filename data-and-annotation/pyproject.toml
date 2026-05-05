@@ -1,0 +1,42 @@
+[project]
+name = "vocalgrad"
+version = "0.1.0"
+description = "Data construction utilities for the VocalGrad benchmark"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115.0",
+  "huggingface_hub[hf_xet]>=0.34.0",
+  "jinja2>=3.1.0",
+  "numpy>=2.0.0",
+  "matplotlib>=3.9.0",
+  "librosa>=0.11.0",
+  "uvicorn>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+  "httpx>=0.28.0",
+  "ruff>=0.11.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [
+  "data/original",
+  "data/processed",
+  "data/manifests",
+  "data/selected"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

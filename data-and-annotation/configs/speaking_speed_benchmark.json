@@ -1,0 +1,35 @@
+{
+  "step_duration_sec": 0.05,
+  "context_duration_sec": 0.05,
+  "jump_at": 0.5,
+  "crossfade_duration_sec": 0.005,
+  "tiers": {
+    "low": {
+      "delta_rate": 0.20
+    },
+    "mid": {
+      "delta_rate": 0.30
+    },
+    "high": {
+      "delta_rate": 0.40
+    }
+  },
+  "curves": {
+    "linear": {
+      "mode": "linear"
+    },
+    "quad_first_flat": {
+      "mode": "quad_first_flat"
+    },
+    "quad_last_flat": {
+      "mode": "quad_last_flat"
+    },
+    "jump": {
+      "mode": "jump"
+    }
+  },
+  "time_stretch_kwargs": {
+    "n_fft": 512,
+    "hop_length": 128
+  }
+}

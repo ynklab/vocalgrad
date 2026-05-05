@@ -1,0 +1,58 @@
+speaker_id,age,gender,accent_raw,accent_group,region
+p225,23,F,English,English,Southern England
+p227,38,M,English,English,Cumbria
+p228,22,F,English,English,Southern England
+p229,23,F,English,English,Southern England
+p231,23,F,English,English,Southern England
+p232,23,M,English,English,Southern England
+p233,23,F,English,English,Staffordshire
+p234,22,F,Scottish,Scottish,West Dumfries
+p237,22,M,Scottish,Scottish,Fife
+p238,22,F,NorthernIrish,Others,Belfast
+p240,21,F,English,English,Southern England
+p243,22,M,English,English,London
+p245,25,M,Irish,Others,Dublin
+p248,23,F,Indian,Others,
+p250,22,F,English,English,SE England
+p251,26,M,Indian,Others,
+p252,22,M,Scottish,Scottish,Edinburgh
+p257,24,F,English,English,Southern England
+p261,26,F,NorthernIrish,Others,Belfast
+p263,22,M,Scottish,Scottish,Aberdeen
+p266,22,F,Irish,Others,Athlone
+p267,23,F,English,English,Yorkshire
+p268,23,F,English,English,Southern England
+p269,20,F,English,English,Newcastle
+p270,21,M,English,English,Yorkshire
+p271,19,M,Scottish,Scottish,Fife
+p272,23,M,Scottish,Scottish,Edinburgh
+p273,23,M,English,English,Suffolk
+p274,22,M,English,English,Essex
+p275,23,M,Scottish,Scottish,Midlothian
+p279,23,M,English,English,Leicester
+p282,23,F,English,English,Newcastle
+p287,23,M,English,English,York
+p288,22,F,Irish,Others,Dublin
+p293,22,F,NorthernIrish,Others,Belfast
+p294,33,F,American,American,San Francisco
+p295,23,F,Irish,Others,Dublin
+p299,25,F,American,American,California
+p302,20,M,Canadian,Others,Montreal
+p303,24,F,Canadian,Others,Toronto
+p304,22,M,NorthernIrish,Others,Belfast
+p307,23,F,Canadian,Others,Ontario
+p308,18,F,American,American,Alabama
+p311,21,M,American,American,Iowa
+p312,19,F,Canadian,Others,Hamilton
+p313,24,F,Irish,Others,County Down
+p314,26,F,SouthAfrican,Others,Cape Town
+p318,32,F,American,American,Napa
+p323,19,F,SouthAfrican,Others,Pretoria
+p330,26,F,American,American,
+p335,25,F,NewZealand,Others,English
+p340,18,F,Irish,Others,Dublin
+p343,27,F,Canadian,Others,Alberta
+p345,22,M,American,American,Florida
+p347,26,M,SouthAfrican,Others,Johannesburg
+p351,21,F,NorthernIrish,Others,Derry
+p361,19,F,American,American,New Jersey

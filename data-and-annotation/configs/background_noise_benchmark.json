@@ -1,0 +1,31 @@
+{
+  "step_duration_sec": 0.05,
+  "apply_region": "speech_span",
+  "global_seed": 42,
+  "jump_at": 0.5,
+  "tiers": {
+    "low": {
+      "noise_ratio_max": 0.03
+    },
+    "mid": {
+      "noise_ratio_max": 0.07
+    },
+    "high": {
+      "noise_ratio_max": 0.12
+    }
+  },
+  "curves": {
+    "linear": {
+      "mode": "linear"
+    },
+    "quad_first_flat": {
+      "mode": "quad_first_flat"
+    },
+    "quad_last_flat": {
+      "mode": "quad_last_flat"
+    },
+    "jump": {
+      "mode": "jump"
+    }
+  }
+}

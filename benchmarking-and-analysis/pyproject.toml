@@ -1,0 +1,125 @@
+[project]
+name = "vocalgrad-reproduction"
+version = "0.1.0"
+description = "Reproduction code for the VocalGrad paper experiments"
+readme = "README.md"
+requires-python = "==3.10.*"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "datasets>=2.20",
+  "soundfile>=0.12",
+  "librosa>=0.10",
+  "scipy",
+  "python-dotenv>=1.0",
+  "google-genai>=1.12.1",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+kimia = [
+  "transformers==4.51.3",
+  "tokenizers==0.21.1",
+  "qwen-omni-utils>=0.0.8",
+  "tiktoken>=0.7",
+  "accelerate>=0.34",
+  "huggingface-hub>=0.24",
+  "sentencepiece",
+  "protobuf",
+  "trl",
+  "peft",
+  "mpi4py",
+  "deepspeed",
+  "wandb",
+  "tensorboard",
+  "stanza",
+  "nltk",
+  "torch==2.8.0+cu129",
+  "torchvision",
+  "triton==3.4.0",
+  "kimi-audio",
+]
+audioflamingo3 = [
+  "transformers>=5.0.0rc2",
+  "accelerate>=1.12.0",
+  "huggingface-hub>=0.24",
+  "sentencepiece",
+  "protobuf",
+  "torch==2.8.0+cu129",
+  "torchvision",
+  "torchaudio",
+  "triton==3.4.0",
+]
+stepaudio2 = [
+  "transformers==4.49.0",
+  "accelerate>=1.12.0",
+  "huggingface-hub>=0.24",
+  "sentencepiece",
+  "protobuf",
+  "torch==2.8.0+cu129",
+  "torchvision",
+  "torchaudio",
+  "triton==3.4.0",
+  "onnxruntime",
+  "s3tokenizer",
+  "diffusers",
+  "hyperpyyaml",
+]
+analysis = [
+  "matplotlib>=3.9",
+  "seaborn>=0.13",
+  "scikit-learn>=1.5",
+]
+
+[tool.uv]
+package = true
+conflicts = [
+  [
+    { extra = "kimia" },
+    { extra = "audioflamingo3" },
+  ],
+  [
+    { extra = "kimia" },
+    { extra = "stepaudio2" },
+  ],
+  [
+    { extra = "audioflamingo3" },
+    { extra = "stepaudio2" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu129"},
+]
+torchvision = [
+  { index = "pytorch-cu129"},
+]
+torchaudio = [
+  { index = "pytorch-cu129"},
+]
+triton = [
+  { url = "https://download.pytorch.org/whl/triton-3.4.0-cp310-cp310-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl" },
+]
+kimi-audio = { git = "https://github.com/MoonshotAI/Kimi-Audio.git" }
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+run-vocalgrad = "plic.cli_vocalgrad:main"
+run-vocalgrad-all = "plic.cli_vocalgrad_all:main"
+run-vocalgrad-fewshot-all = "plic.cli_vocalgrad_fewshot_all:main"
+run-vocalgrad-beep-all = "plic.cli_vocalgrad_beep_all:main"
+run-vocalgrad-cross-attribute = "plic.cli_vocalgrad_cross_attribute:main"
+run-vocalgrad-cross-attribute-all = "plic.cli_vocalgrad_cross_attribute_all:main"
+analyze-vocalgrad = "plic.cli_summarize_vocalgrad:main"
+
+[[tool.uv.index]]
+name = "pytorch-cu129"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true

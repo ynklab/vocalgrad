@@ -1,0 +1,32 @@
+{
+  "seed": 42,
+  "vctk_root": "data/original/VCTK-Corpus",
+  "candidate_speakers": 107,
+  "test_speakers": 50,
+  "clips_per_speaker": 2,
+  "test_source_clips": 100,
+  "min_clip_duration_sec": 3.0,
+  "excluded_clip_ids": [
+    "p306_140",
+    "p360_140"
+  ],
+  "duplicate_sentence_ids_in_test_source": 10,
+  "max_sentence_frequency_in_test_source": 2,
+  "min_audio_duration_sec_in_test_source": 3.031042,
+  "max_audio_duration_sec_in_test_source": 7.552812,
+  "gender_counts": {
+    "F": 25,
+    "M": 25
+  },
+  "accent_counts": {
+    "American": 13,
+    "English": 13,
+    "Others": 12,
+    "Scottish": 12
+  },
+  "output_files": {
+    "test_speakers": "data/metadata/selection/test_speakers_50.csv",
+    "selected_sentences": "data/metadata/selection/selected_sentences_100.csv",
+    "test_source_clips": "data/metadata/selection/test_source_clips_100.csv"
+  }
+}

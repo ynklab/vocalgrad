@@ -1,0 +1,51 @@
+speaker_id,age,gender,accent_raw,accent_group,region
+p226,22,M,English,English,Surrey
+p230,22,F,English,English,Stockton-on-tees
+p236,23,F,English,English,Manchester
+p239,22,F,English,English,SW England
+p241,21,M,Scottish,Scottish,Perth
+p244,22,F,English,English,Manchester
+p246,22,M,Scottish,Scottish,Selkirk
+p247,22,M,Scottish,Scottish,Argyll
+p249,22,F,Scottish,Scottish,Aberdeen
+p253,22,F,Welsh,Others,Cardiff
+p254,21,M,English,English,Surrey
+p255,19,M,Scottish,Scottish,Galloway
+p256,24,M,English,English,Birmingham
+p258,22,M,English,English,Southern England
+p259,23,M,English,English,Nottingham
+p260,21,M,Scottish,Scottish,Orkney
+p262,23,F,Scottish,Scottish,Edinburgh
+p264,23,F,Scottish,Scottish,West Lothian
+p265,23,F,Scottish,Scottish,Ross
+p276,24,F,English,English,Oxford
+p277,23,F,English,English,NE England
+p278,22,M,English,English,Cheshire
+p281,29,M,Scottish,Scottish,Edinburgh
+p283,24,F,Irish,Others,Cork
+p284,20,M,Scottish,Scottish,Fife
+p285,21,M,Scottish,Scottish,Edinburgh
+p286,23,M,English,English,Newcastle
+p292,23,M,NorthernIrish,Others,Belfast
+p297,20,F,American,American,New York
+p298,19,M,Irish,Others,Tipperary
+p300,23,F,American,American,California
+p301,23,F,American,American,North Carolina
+p305,19,F,American,American,Philadelphia
+p306,21,F,American,American,New York
+p310,21,F,American,American,Tennessee
+p316,20,M,Canadian,Others,Alberta
+p317,23,F,Canadian,Others,Hamilton
+p326,26,M,Australian,Others,English Sydney
+p329,23,F,American,American,
+p333,19,F,American,American,Indiana
+p334,18,M,American,American,Chicago
+p336,18,F,SouthAfrican,Others,Johannesburg
+p339,21,F,American,American,Pennsylvania
+p341,26,F,American,American,Ohio
+p360,19,M,American,American,New Jersey
+p362,29,F,American,American,
+p363,22,M,Canadian,Others,Toronto
+p364,23,M,Irish,Others,Donegal
+p374,28,M,Australian,Others,English
+p376,22,M,Indian,Others,

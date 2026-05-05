@@ -1,0 +1,38 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+
+.env
+
+# Large source data
+/data/original/
+/data/representative/
+/data/deprecated/
+/data/vocalgrad_public/
+
+# Generated artifacts
+/data/processed/
+/data/manifests/
+/data/selected/
+/data/metadata/analysis
+/annotation_tool/data/results/*
+/annotation_tool/data/analysis/*
+/annotation_tool/data/annotations/*
+/annotation_tool/doc
+/annotation_tool/data/users/users.json
+/annotation_tool/data/users/credentials.csv
+
+# Keep metadata templates and selection tables tracked
+!/data/metadata/selection/
+!/data/metadata/annotations/
+!/annotation_tool/data/results/.gitkeep
+!/annotation_tool/data/users/.gitkeep
