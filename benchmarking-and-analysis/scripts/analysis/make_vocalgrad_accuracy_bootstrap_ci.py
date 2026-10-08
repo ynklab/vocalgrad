@@ -55,6 +55,10 @@ MODEL_DISPLAY_NAMES = {
 }
 
 LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
+DEFAULT_RAW_ROOTS = [
+    Path("outputs/raw/vocalgrad/default"),
+    Path("outputs/raw/vocalgrad/audio-ref"),
+]
 
 
 def parse_args() -> argparse.Namespace:
@@ -63,11 +67,11 @@ def parse_args() -> argparse.Namespace:
         "--raw-root",
         action="append",
         type=Path,
-        default=[
-            Path("outputs/raw/vocalgrad/default"),
-            Path("outputs/raw/vocalgrad/audio-ref"),
-        ],
-        help="Root containing per-category raw model JSONL files. Can be repeated.",
+        default=None,
+        help=(
+            "Root containing per-category raw model JSONL files. Can be repeated. "
+            "When supplied, replaces the default paper-result roots."
+        ),
     )
     parser.add_argument(
         "--out-csv",
@@ -82,7 +86,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-bootstrap", type=int, default=10_000)
     parser.add_argument("--seed", type=int, default=1234)
     parser.add_argument("--label", default="tab:vocalgrad-model-accuracy-bootstrap-ci")
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.raw_root = args.raw_root or DEFAULT_RAW_ROOTS
+    return args
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:

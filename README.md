@@ -62,3 +62,7 @@ See the subdirectory READMEs for the full setup and expected outputs.
 
 We used OpenAI Codex (https://openai.com/codex/) for coding assistance and for
 reorganizing the code before submission.
+
+## Camera-ready additions
+
+See `benchmarking-and-analysis/docs/camera_ready_experiments.md` for the published additional experiments and `data-and-annotation/docs/alternate_sources.md` for the frozen alternate-source selections.

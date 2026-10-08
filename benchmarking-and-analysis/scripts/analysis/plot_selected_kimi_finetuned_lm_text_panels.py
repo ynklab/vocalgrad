@@ -13,7 +13,7 @@ import seaborn as sns
 DEFAULT_ROOT = Path("outputs/analysis/linear_probe_lm_text_layers_finetuned_kimi")
 DEFAULT_OUT_DIR = Path("outputs/analysis/kimi_finetuned_probe_completed/epoch1/lm_text_layer_lines")
 DEFAULT_MODELS = ["kimi-audio-ft-volume", "kimi-audio-ft-voice_pitch"]
-DEFAULT_EXCLUDED_CATEGORIES: list[str] = []
+DEFAULT_EXCLUDED_CATEGORIES = ["voice_brightness"]
 
 DISPLAY_CATEGORY_NAMES = {
     "speaking_speed": "speed",
@@ -153,7 +153,7 @@ def draw_selected_panels(
             ax=ax,
         )
         ax.set_title(display_panel_name(model_name), fontsize=font_size, fontweight=font_weight)
-        ax.set_xlabel("Hidden-State Index", fontsize=font_size, fontweight=font_weight)
+        ax.set_xlabel("Layer Index", fontsize=font_size, fontweight=font_weight)
         ax.set_ylabel(
             metric_name.replace("_", " ").title() if idx == 0 else "",
             fontsize=font_size,
@@ -183,9 +183,9 @@ def draw_selected_panels(
     for text in legend_obj.get_texts():
         text.set_fontweight(font_weight)
     fig.tight_layout(rect=[0, 0.12, 1, 1], w_pad=0.55)
-    fig.savefig(out_prefix.with_suffix(".png"), dpi=220, bbox_inches="tight", pad_inches=0.03)
-    fig.savefig(out_prefix.with_suffix(".svg"), bbox_inches="tight", pad_inches=0.03)
-    fig.savefig(out_prefix.with_suffix(".pdf"), bbox_inches="tight", pad_inches=0.03)
+    fig.savefig(out_prefix.with_suffix(".png"), dpi=220, bbox_inches="tight", pad_inches=0.15)
+    fig.savefig(out_prefix.with_suffix(".svg"), bbox_inches="tight", pad_inches=0.15)
+    fig.savefig(out_prefix.with_suffix(".pdf"), bbox_inches="tight", pad_inches=0.15)
     plt.close(fig)
 
 

@@ -181,3 +181,7 @@ Format code:
 ```bash
 uv run ruff format .
 ```
+
+## Alternative source datasets
+
+The frozen LoquaciousSet and Common Voice test selections and their generation instructions are documented in `docs/alternate_sources.md`.

@@ -20,8 +20,12 @@ DEFAULT_MODEL_ORDER = [
     "step-audio-2-mini",
     "audioflamingo3",
 ]
+DEFAULT_MODEL_RAW_ROOTS = [
+    Path("outputs/raw/vocalgrad/default"),
+    Path("outputs/raw/vocalgrad/audio-ref"),
+]
 
-DEFAULT_EXCLUDED_CATEGORIES: list[str] = []
+DEFAULT_EXCLUDED_CATEGORIES = ["voice_brightness"]
 DEFAULT_CATEGORY_ORDER = [
     "speaking_speed",
     "voice_pitch",
@@ -65,13 +69,10 @@ def parse_args() -> argparse.Namespace:
         "--model-raw-root",
         action="append",
         type=Path,
-        default=[
-            Path("outputs/raw/vocalgrad/default"),
-            Path("outputs/raw/vocalgrad/audio-ref"),
-        ],
+        default=None,
         help=(
             "Root containing per-category raw model JSONL files. Can be repeated. "
-            "The first matching file is used."
+            "When supplied, replaces the default paper-result roots."
         ),
     )
     parser.add_argument(
@@ -91,9 +92,9 @@ def parse_args() -> argparse.Namespace:
         default=(
             "Human annotator average and model accuracies on VocalGrad by category. "
             "Human values are means over annotator-level accuracies on shared 50-item subsets. "
-            "Model values use the same ambiguity-aware regex direction parser as the "
-            "benchmark runner; responses containing both increase- and decrease-family "
-            "direction words are treated as parsing failures and counted as incorrect."
+            "Model values use a regex-based direction parser; responses containing both increase- "
+            "and decrease-family direction words are treated as parsing failures and counted "
+            "as incorrect."
         ),
     )
     parser.add_argument("--label", default="tab:vocalgrad-human-model-accuracy")
@@ -103,7 +104,9 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_EXCLUDED_CATEGORIES.copy(),
         help="Category to exclude from the table. Can be repeated.",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    args.model_raw_root = args.model_raw_root or DEFAULT_MODEL_RAW_ROOTS
+    return args
 
 
 def read_jsonl(path: Path) -> Iterable[dict]:

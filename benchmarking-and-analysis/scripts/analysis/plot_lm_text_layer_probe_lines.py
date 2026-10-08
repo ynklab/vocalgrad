@@ -16,7 +16,7 @@ DEFAULT_MODEL_ORDER = [
     "step-audio-2-mini",
     "audioflamingo3",
 ]
-DEFAULT_EXCLUDED_CATEGORIES: list[str] = []
+DEFAULT_EXCLUDED_CATEGORIES = ["voice_brightness"]
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -140,8 +140,8 @@ def draw_model_mean_line_chart(df: pd.DataFrame, metric_name: str, out_prefix: P
         markers=True,
         dashes=False,
     )
-    ax.set_title(f"LM-Text Probe {metric_name.replace('_', ' ').title()} By Hidden-State Index")
-    ax.set_xlabel("Hidden-State Index")
+    ax.set_title(f"LM-Text Probe {metric_name.replace('_', ' ').title()} By Layer Index")
+    ax.set_xlabel("Layer Index")
     ax.set_ylabel(metric_name.replace("_", " ").title())
     ax.set_ylim(0.0, 1.0)
     ax.legend(title="Model", loc="best")
@@ -171,7 +171,7 @@ def draw_category_line_chart(df: pd.DataFrame, metric_name: str, model_name: str
         linewidth=2.0,
     )
     ax.set_title(f"{display_model_name(model_name)} LM-Text Probe {metric_name.replace('_', ' ').title()} By Category")
-    ax.set_xlabel("Hidden-State Index")
+    ax.set_xlabel("Layer Index")
     ax.set_ylabel(metric_name.replace("_", " ").title())
     ax.set_ylim(0.5, 1.0)
     if max_layer is not None:
@@ -207,7 +207,7 @@ def draw_category_overview(
     color_map = {category: palette[idx] for idx, category in enumerate(category_order)}
 
     fig, axes = plt.subplots(1, len(models), figsize=(width, height), sharex=False, sharey=True)
-    axes_list = list(axes.flat)
+    axes_list = [axes] if len(models) == 1 else list(axes.flat)
     legend_handles = legend_labels = None
 
     for idx, (ax, model_name) in enumerate(zip(axes_list, models)):
@@ -228,7 +228,7 @@ def draw_category_overview(
             ax=ax,
         )
         ax.set_title(display_model_name(model_name), fontsize=font_size, fontweight=font_weight)
-        ax.set_xlabel("Hidden-State Index", fontsize=font_size, fontweight=font_weight)
+        ax.set_xlabel("Layer Index", fontsize=font_size, fontweight=font_weight)
         ax.set_ylabel(metric_name.replace("_", " ").title() if idx == 0 else "", fontsize=font_size, fontweight=font_weight)
         ax.set_ylim(0.5, 1.0)
         if max_layer is not None:
@@ -264,9 +264,9 @@ def draw_category_overview(
         for text in legend_obj.get_texts():
             text.set_fontweight(font_weight)
     fig.tight_layout(rect=[0, 0.22, 1, 1], w_pad=0.55)
-    fig.savefig(out_prefix.with_suffix(".png"), dpi=220)
+    fig.savefig(out_prefix.with_suffix(".png"), dpi=220, bbox_inches="tight", pad_inches=0.15)
     fig.savefig(out_prefix.with_suffix(".svg"))
-    fig.savefig(out_prefix.with_suffix(".pdf"))
+    fig.savefig(out_prefix.with_suffix(".pdf"), bbox_inches="tight", pad_inches=0.15)
     plt.close(fig)
 
 

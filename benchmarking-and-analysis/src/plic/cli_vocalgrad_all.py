@@ -88,6 +88,14 @@ def build_parser(
         action="store_true",
         help="Explicitly say that the target attribute is being judged for the current audio clip.",
     )
+    parser.add_argument(
+        "--audio-before-text",
+        action="store_true",
+        help=(
+            "Send each evaluation clip before its question text through the "
+            "interleaved multimodal input path."
+        ),
+    )
     parser.add_argument("--concurrency", type=int, default=8)
     parser.add_argument("--cleanup-uploaded-files", action="store_true")
     parser.add_argument("--max-retries", type=int, default=5)
@@ -242,6 +250,7 @@ def run_from_args(args: argparse.Namespace) -> None:
         "top_k": args.top_k,
         "swap_direction_order": args.swap_direction_order,
         "explicit_audio_clip_reference": args.explicit_audio_clip_reference,
+        "audio_before_text": args.audio_before_text,
         "concurrency": args.concurrency,
         "skip_analysis": args.skip_analysis,
         "generation_summaries": generation_summaries,

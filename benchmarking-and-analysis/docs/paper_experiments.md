@@ -230,3 +230,7 @@ appendix aggregation:
 .venv-af3/bin/python scripts/run/evaluate_source_clips_generation_bias.py --backend audioflamingo3
 .venv/bin/python scripts/run/evaluate_source_clips_generation_bias.py --backend gemini
 ```
+
+## Camera-ready appendix additions
+
+For Tables 5, 12–13, 15–19, 21–22 and Figure 9, see `camera_ready_experiments.md`. Existing Table 20 fine-tuning workflows remain unchanged.

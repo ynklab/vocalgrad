@@ -78,6 +78,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Explicitly say that the target attribute is being judged for the current audio clip.",
     )
     parser.add_argument(
+        "--audio-before-text",
+        action="store_true",
+        help=(
+            "Send each evaluation clip before its question text through the "
+            "interleaved multimodal input path."
+        ),
+    )
+    parser.add_argument(
         "--concurrency",
         type=int,
         default=8,
@@ -107,7 +115,11 @@ def build_prompt(
     *,
     swap_direction_order: bool = False,
     explicit_audio_clip_reference: bool = False,
+    audio_before_text: bool = False,
 ) -> str:
+    # The flag controls the multimodal part order, not the question wording.
+    # Keeping it here lets saved prompt settings be replayed with build_prompt.
+    del audio_before_text
     prompt_attribute = {
         "volume": "volume",
         "voice_pitch": "voice pitch",
@@ -132,6 +144,7 @@ def prompt_settings_dict(args: argparse.Namespace) -> dict[str, bool]:
     return {
         "swap_direction_order": args.swap_direction_order,
         "explicit_audio_clip_reference": args.explicit_audio_clip_reference,
+        "audio_before_text": getattr(args, "audio_before_text", False),
     }
 
 
@@ -164,6 +177,11 @@ def interleaved_parts_for_sample(sample: VocalGradSample, args: argparse.Namespa
     parts_builder = getattr(args, "sample_interleaved_parts_builder", None)
     if callable(parts_builder):
         return list(parts_builder(sample, args))
+    if getattr(args, "audio_before_text", False):
+        return [
+            {"type": "audio", "path": str(sample.audio_path)},
+            {"type": "text", "text": prompt_for_sample(sample, args)},
+        ]
     return None
 
 
