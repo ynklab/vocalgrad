@@ -4,16 +4,15 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
-from dotenv import load_dotenv
-from tqdm.auto import tqdm
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from plic.kimi_common import AudioModelRuntime, resolve_backend, resolve_model_id  # noqa: E402
-from plic.linear_probe import slugify_model_id  # noqa: E402
+if TYPE_CHECKING:
+    from plic.kimi_common import AudioModelRuntime
+from plic.model_names import slugify_model_id  # noqa: E402
 from plic.meld import TASK_LABELS, build_meld_prompt, load_meld_test  # noqa: E402
 
 
@@ -33,9 +32,6 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--task", required=True, choices=tuple(TASK_LABELS))
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--max-samples", type=int, default=None)
-    p.add_argument("--max-new-tokens", type=int, default=8)
-    p.add_argument("--temperature", type=float, default=0.0)
-    p.add_argument("--top-k", type=int, default=5)
     p.add_argument("--overwrite", action="store_true")
     return p
 
@@ -47,6 +43,7 @@ def _tokenizer(runtime: AudioModelRuntime) -> tuple[object, dict[str, Any]]:
 def _candidate_ids(
     runtime: AudioModelRuntime, candidates: dict[str, str], *, kind: str
 ) -> dict[str, int]:
+    # Score the single token for an ASCII space followed by the option letter.
     tokenizer, kwargs = _tokenizer(runtime)
     result: dict[str, int] = {}
     for key, text in candidates.items():
@@ -67,6 +64,9 @@ def _score_candidate_set(
     selected = final[[candidate_ids[letter] for letter in candidate_ids]].float()
     probs = torch.softmax(selected, dim=0)
     letters = list(candidate_ids)
+    if not bool(torch.isfinite(selected).all()):
+        raise ValueError("Non-finite option-letter logits")
+    # torch.argmax selects the first maximum, following candidate order A--G.
     index = int(torch.argmax(selected).item())
     return {
         f"{prefix}_logits": {
@@ -80,10 +80,10 @@ def _score_candidate_set(
 
 
 def _score_logits(
-    logits: Any, letter_ids: dict[str, int], label_ids: dict[str, int]
+    logits: Any, letter_ids: dict[str, int]
 ) -> dict[str, Any]:
     final = logits[0, -1] if logits.dim() == 3 else logits[0]
-    return _score_candidate_set(final, label_ids, prefix="label_choice")
+    return _score_candidate_set(final, letter_ids, prefix="letter_choice")
 
 
 def _logits_kimia(
@@ -91,7 +91,6 @@ def _logits_kimia(
     prompt: str,
     audio: Path,
     letter_ids: dict[str, int],
-    label_ids: dict[str, int],
 ) -> dict[str, Any]:
     import torch
 
@@ -114,7 +113,7 @@ def _logits_kimia(
             past_key_values=None,
             return_dict=False,
         )
-    return _score_logits(logits, letter_ids, label_ids)
+    return _score_logits(logits, letter_ids)
 
 
 def _logit_prediction(
@@ -122,9 +121,8 @@ def _logit_prediction(
     prompt: str,
     audio: Path,
     letter_ids: dict[str, int],
-    label_ids: dict[str, int],
 ) -> dict[str, Any]:
-    return _logits_kimia(runtime, prompt, audio, letter_ids, label_ids)
+    return _logits_kimia(runtime, prompt, audio, letter_ids)
 
 
 def _apply_kimi_adapter(runtime: AudioModelRuntime, adapter_path: Path) -> None:
@@ -143,6 +141,10 @@ def _apply_kimi_adapter(runtime: AudioModelRuntime, adapter_path: Path) -> None:
 
 
 def main() -> None:
+    from dotenv import load_dotenv
+    from tqdm.auto import tqdm
+    from plic.kimi_common import AudioModelRuntime, resolve_backend, resolve_model_id
+
     load_dotenv()
     args = parser().parse_args()
     if args.out.exists() and not args.overwrite:
@@ -158,17 +160,16 @@ def main() -> None:
     try:
         if args.adapter_path is not None:
             _apply_kimi_adapter(runtime, args.adapter_path)
-        letter_ids = {}
-        label_ids = _candidate_ids(runtime, choices, kind="option label")
+        letter_ids = _candidate_ids(runtime, {letter: letter for letter in choices}, kind="option letter")
         with args.out.open("w", encoding="utf-8") as f:
             for sample in tqdm(
                 samples, desc=f"MELD {args.task} {slugify_model_id(model_id)}"
             ):
                 gold = getattr(sample, args.task)
                 logits = _logit_prediction(
-                    runtime, prompt, sample.audio_path, letter_ids, label_ids
+                    runtime, prompt, sample.audio_path, letter_ids
                 )
-                label_argmax = logits["label_choice_argmax"]
+                letter_argmax = logits["letter_choice_argmax"]
                 row = {
                     "sample_id": sample.sample_id,
                     "audio_path": str(sample.audio_path),
@@ -180,9 +181,9 @@ def main() -> None:
                     "gold_label": gold,
                     "prompt": prompt,
                     "choices": choices,
-                    "candidate_label_token_ids": label_ids,
-                    "logit_word_prediction": choices[label_argmax],
-                    "logit_word_correct": choices[label_argmax] == gold,
+                    "candidate_letter_token_ids": letter_ids,
+                    "logit_letter_prediction": choices[letter_argmax],
+                    "logit_letter_correct": choices[letter_argmax] == gold,
                 }
                 row.update(logits)
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

@@ -107,14 +107,26 @@ bash scripts/reproduce/15_meld_transfer.sh
 ANALYZE_ONLY=1 bash scripts/reproduce/15_meld_transfer.sh
 ```
 
-The exact historical prompt lists seven lettered options and asks for an
-option letter; Table 22 uses the **label-word logits**, not generated text
-or option-letter logits. Each space-prefixed label must tokenize as one token.
-The order is anger, disgust, fear, joy, neutral, sadness, surprise. Scores use
-last-position logits before generation. The three conditions share test IDs.
-Sentiment, Speaking Speed adapters and other-model MELD evaluations are
-excluded. Expected macro-F1 percentages: 41.7, 39.1, 30.5. The transition
-summary includes the published base-Neutral → Pitch-tuned-Joy ratio.
+The prompt lists seven options (A--G) and asks "Answer with only the option
+letter." The mapping is A: anger, B: disgust, C: fear, D: joy, E: neutral,
+F: sadness, G: surprise. Kimi receives user text followed by user audio,
+with no system prompt.
+
+Each candidate is the single token encoding an ASCII space followed by its
+option letter: `" A"`, ..., `" G"`, with `bos=False, eos=False`. Tokenization
+must produce exactly one token per candidate. At the final input position,
+before answer generation, select the candidate with the highest logit and map
+its letter to the emotion. Ties select the first candidate in A--G order.
+The scoring rule is `argmax_L z_last[token_id(" " + L)]`.
+
+The three conditions share 2,610 test IDs and gold labels. Report precision,
+recall and F1 per class, and the equally weighted average of each metric over
+the seven classes (zero-division=0). Expected macro-F1 percentages are
+41.3, 37.7 and 34.2 for Base, Volume-tuned and Pitch-tuned, respectively.
+Of the 1,228 clips predicted as Neutral by Base, Pitch-tuned predicts Joy for
+317 (25.8%). The analysis reads `letter_choice_logits`, checks any stored
+option-letter predictions against their argmax, and writes the per-class CSV,
+Neutral-to-Joy counts and `emotion_logit_letter_precision_recall_f1.md`.
 
 Raw predictions, feature caches, audio and checkpoints are not committed.
 Small smoke runs can use existing wrappers' sample limits, but they do not

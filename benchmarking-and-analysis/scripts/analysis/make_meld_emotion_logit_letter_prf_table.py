@@ -21,7 +21,7 @@ def _cell(precision: float, recall: float, f1: float) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Create a MELD emotion logit-word precision/recall/F1 Markdown table."
+        description="Create a MELD emotion option-letter precision/recall/F1 Markdown table."
     )
     parser.add_argument(
         "--input",
@@ -34,7 +34,7 @@ def main() -> None:
         "--output",
         type=Path,
         default=Path(
-            "outputs/analysis/rebuttal/meld_mcq/finetune_prediction_changes/emotion_logit_word_precision_recall_f1.md"
+            "outputs/analysis/rebuttal/meld_mcq/finetune_prediction_changes/emotion_logit_letter_precision_recall_f1.md"
         ),
     )
     args = parser.parse_args()
@@ -60,7 +60,7 @@ def main() -> None:
 
     columns = ("Macro-average", *labels)
     lines = [
-        "Cell format: precision / recall / F1 (%), using `logit_word` predictions.",
+        "Cell format: precision / recall / F1 (%), using `logit_letter` predictions.",
         "",
         "| Model | " + " | ".join(columns) + " |",
         "|---|" + "---:|" * len(columns),

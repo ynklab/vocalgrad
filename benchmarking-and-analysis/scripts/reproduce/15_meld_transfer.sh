@@ -21,4 +21,4 @@ if [[ "$ANALYZE_ONLY" != 1 ]]; then
  done
 fi
 "$ANALYSIS_PYTHON_BIN" scripts/analysis/analyze_meld_emotion_transfer.py --raw-root "$RAW_ROOT" --out-root "$OUT_ROOT"
-"$ANALYSIS_PYTHON_BIN" scripts/analysis/make_meld_emotion_logit_word_prf_table.py --input "$OUT_ROOT/per_class_f1.csv" --output "$OUT_ROOT/emotion_logit_word_precision_recall_f1.md"
+"$ANALYSIS_PYTHON_BIN" scripts/analysis/make_meld_emotion_logit_letter_prf_table.py --input "$OUT_ROOT/per_class_f1.csv" --output "$OUT_ROOT/emotion_logit_letter_precision_recall_f1.md"
