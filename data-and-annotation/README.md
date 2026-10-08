@@ -152,6 +152,10 @@ uv run python scripts/prepare_vocalgrad_public.py
 
 The generated public dataset can also be downloaded from [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
+For placement of the downloaded test split, generated train/beep data, and
+unmodified test sources into the evaluation directory, see
+[the evaluation data setup](../benchmarking-and-analysis/docs/data_setup.md).
+
 ## Human Annotation
 
 The annotation interface and shared 50-item manifests are in `annotation_tool/`.
