@@ -48,17 +48,51 @@ moonshotai/Kimi-Audio-7B-Instruct
 
 ## MiMo-Audio
 
-MiMo-Audio is isolated because its reference stack may require a different
-Python and CUDA dependency set.
+Our MiMo-Audio environment uses Python 3.12.11 on Linux aarch64, PyTorch
+2.8.0+cu129, torchaudio 2.8.0, Triton 3.4.0, Transformers 4.49.0, and
+FlashAttention 2.7.4.post1. Use a CUDA-capable GPU and a compatible NVIDIA
+driver. Building FlashAttention also requires a CUDA 12.9 toolkit (`nvcc`),
+a C++ compiler, and `CUDA_HOME` pointing to the toolkit when it is not
+automatically detected.
+
+Run the following from `benchmarking-and-analysis/`. The runtime expects the
+[upstream MiMo-Audio checkout](https://github.com/XiaomiMiMo/MiMo-Audio)
+at exactly `third_party/MiMo-Audio`:
 
 ```bash
-uv venv --python 3.12 .venv-mimo
-source .venv-mimo/bin/activate
+mkdir -p third_party
+git clone https://github.com/XiaomiMiMo/MiMo-Audio.git third_party/MiMo-Audio
+git -C third_party/MiMo-Audio checkout --detach 62d956b4a1a45419bee5e41f477078c3684dbbcc
+uv venv --no-project --python 3.12.11 .venv-mimo
+uv pip install --python .venv-mimo/bin/python -r requirements/mimo.txt
+uv pip install --python .venv-mimo/bin/python packaging setuptools wheel ninja
+FLASH_ATTENTION_FORCE_BUILD=TRUE MAX_JOBS=4 uv pip install \
+  --python .venv-mimo/bin/python --no-build-isolation --no-deps \
+  flash-attn==2.7.4.post1
+uv pip check --python .venv-mimo/bin/python
 ```
 
-Install the MiMo-Audio reference dependencies according to the upstream project
-instructions, then make sure the repository `src/` directory is on
-`PYTHONPATH`. The reproduction scripts set `PYTHONPATH` automatically.
+If the upstream checkout already exists, verify that it is clean before
+checking out the specified revision. The requirements file pins the runtime
+packages to the versions in our environment, including the Python 3.12 aarch64
+GPU wheels. Transitive dependencies are resolved at installation time. The
+upstream `requirements.txt` pins a different PyTorch/Triton stack; use the
+requirements file above for these experiments.
+
+MiMo uses `uv pip` with an explicit Python path because the main project and
+its `uv.lock` target Python 3.10. Do not install this project with `uv sync`
+or `pip install -e .` into `.venv-mimo`. The reproduction wrappers expose
+`src/` through `PYTHONPATH`, and the runtime adds the upstream checkout to its
+import path. The base `.venv` analysis environment is still needed for probe
+training and result aggregation.
+
+The following check imports the runtime without loading model weights. Run it
+on the configured GPU machine after installation:
+
+```bash
+PYTHONPATH=src:third_party/MiMo-Audio .venv-mimo/bin/python -c \
+  'import torch, torchaudio, flash_attn, peft; from src.mimo_audio.mimo_audio import MimoAudio; from plic.mimo_finetune import load_mimo_runtime; print(torch.__version__, torch.version.cuda, torch.cuda.is_available())'
+```
 
 Default model ids:
 
@@ -72,6 +106,32 @@ For MiMo-Audio, this repository's runtime calls the upstream
 MiMo therefore uses the upstream sampling defaults, including temperature 0.3
 and top-p 0.95. The local CLI temperature field may still appear in generated
 run manifests, but it is not passed into the MiMo-Audio generation call.
+
+The runtime downloads the model and audio tokenizer from Hugging Face when
+first loaded. For an offline run, populate the same Hugging Face cache first:
+
+```bash
+.venv-mimo/bin/hf download XiaomiMiMo/MiMo-Audio-7B-Instruct
+.venv-mimo/bin/hf download XiaomiMiMo/MiMo-Audio-Tokenizer
+```
+
+With the [dataset layout](data_setup.md) prepared, run a small benchmark in a
+separate output directory before the full experiment:
+
+```bash
+bash scripts/reproduce/01_benchmark.sh BACKEND=mimoaudio \
+  CATEGORIES=volume MAX_SAMPLES=2 RUN_TABLES=0 \
+  RAW_ROOT=outputs/raw/mimo_smoke ANALYSIS_ROOT=outputs/analysis/mimo_smoke
+bash scripts/reproduce/01_benchmark.sh BACKEND=mimoaudio
+bash scripts/reproduce/03_linear_probe_audio.sh MODEL_STEMS=mimo-audio
+bash scripts/reproduce/04_linear_probe_layers.sh MODEL_STEMS=mimo-audio
+bash scripts/reproduce/05_finetune_lora.sh MODEL_STEM=mimo-audio \
+  TRAIN_CATEGORY=volume SCOPE=all_linear
+```
+
+The runtime defaults to seed 1234 (`MIMOAUDIO_SEED`). See
+[the experiment map](paper_experiments.md) for the remaining fine-tuning
+categories, scopes, and appendix conditions.
 
 ## Step-Audio-2 Mini
 
