@@ -63,8 +63,7 @@ Synthetic beep ablation:
 ├── data/
 │   ├── metadata/selection/          # Reproducible source clip selections
 │   ├── original/VCTK-Corpus/        # Manually placed VCTK source data, not tracked
-│   ├── processed/                   # Generated benchmark audio, not tracked
-│   └── vocalgrad_public/            # Hugging Face packaging output, not tracked
+│   └── processed/                   # Generated benchmark audio, not tracked
 ├── docs/
 │   ├── pipeline_runbook.md          # End-to-end dataset generation commands
 │   └── reproducibility.md           # Paper-section to repository mapping
@@ -142,15 +141,10 @@ uv run python scripts/validate_vocalgrad_dataset.py --require-processed
 For detailed commands, expected outputs, and validation checks, see
 [docs/pipeline_runbook.md](docs/pipeline_runbook.md).
 
-## Public Dataset Packaging
+## Public Dataset
 
-Prepare the test-only public release:
-
-```bash
-uv run python scripts/prepare_vocalgrad_public.py
-```
-
-The generated public dataset can also be downloaded from [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
+Download the published test split from
+[ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
 For placement of the downloaded test split, generated train/beep data, and
 unmodified test sources into the evaluation directory, see

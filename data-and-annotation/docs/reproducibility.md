@@ -34,10 +34,10 @@ Out of scope for this directory:
 | Section 3.2 Speech Onset and Offset Detection | Energy-based speech span detection | `scripts/analyze_selected_clip_onset.py` | onset/offset columns in source CSVs |
 | Section 3.2 Data Augmentation | Shared condition grid over tiers, curves, directions | `scripts/generate_all_benchmarks.py --split all --overwrite` | `data/processed/test/*`, `data/processed/train/*` |
 | Section 3.3 Category-Specific Augmentations | 9 active augmentation generators and configs | `scripts/generate_*_benchmark.py`, `configs/*_benchmark.json` | per-category manifests and generated wavs |
-| Section 3.4 Prompting Format | Prompt text in public metadata | `scripts/prepare_vocalgrad_public.py` | `data/vocalgrad_public/metadata.csv` |
+| Section 3.4 Prompting Format | Prompt text in public metadata | [Published dataset](https://huggingface.co/datasets/ynklab/vocalgrad) | Downloaded `metadata.csv` |
 | Section 4.1 Human Evaluation Setup | Shared 50-item manifests and web interface | `scripts/build_annotation_manifests.py`, `annotation_tool/` | `annotation_tool/data/manifests/*/shared_annotation_50.csv` |
 | Section 4.3 Ablation: Removing Linguistic Content | Synthetic beep sources and four ablation categories | `scripts/generate_beep_source_clips.py`, `scripts/generate_ablation_beep_benchmarks.py` | `data/processed/ablation_beep/*` |
-| Public Dataset Release | Hugging Face test-only layout | `scripts/prepare_vocalgrad_public.py` | `data/vocalgrad_public/` |
+| Public Dataset Release | Download and arrange the test split | [Data setup](../../benchmarking-and-analysis/docs/data_setup.md) | `datasets/vocalgrad/test/` in the evaluation directory |
 | Repository Validation | Check source metadata, manifests, and public metadata | `scripts/validate_vocalgrad_dataset.py` | pass/fail validation output |
 
 ## Dataset Construction Contract

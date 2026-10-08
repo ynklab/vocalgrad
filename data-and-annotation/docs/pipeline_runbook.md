@@ -41,7 +41,6 @@ uv run python scripts/generate_ablation_beep_benchmarks.py --overwrite
 
 uv run python scripts/validate_vocalgrad_dataset.py --require-processed
 
-uv run python scripts/prepare_vocalgrad_public.py
 ```
 
 ## Step 1: Test Source Selection
@@ -231,17 +230,10 @@ Notes:
 - Raw annotation results and local credentials are not intended for public
   release.
 
-## Step 7: Public Packaging
+## Step 7: Evaluation Data Placement
 
-Prepare the test-only Hugging Face layout:
-
-```bash
-uv run python scripts/prepare_vocalgrad_public.py
-```
-
-Outputs:
-
-- `data/vocalgrad_public/`
+Download the published test data and arrange generated train/beep data using
+[the evaluation data setup](../../benchmarking-and-analysis/docs/data_setup.md).
 
 ## Validation
 
@@ -257,10 +249,11 @@ Run this after generating benchmark audio to require all processed manifests:
 uv run python scripts/validate_vocalgrad_dataset.py --require-processed
 ```
 
-Run this after public packaging to require the Hugging Face metadata:
+To also check downloaded Hugging Face metadata, specify its local directory:
 
 ```bash
-uv run python scripts/validate_vocalgrad_dataset.py --require-processed --require-public
+uv run python scripts/validate_vocalgrad_dataset.py --require-processed --require-public \
+  --public-root ../benchmarking-and-analysis/datasets/vocalgrad_hf
 ```
 
 The validation script checks:
