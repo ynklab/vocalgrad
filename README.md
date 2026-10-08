@@ -1,7 +1,9 @@
-# VocalGrad Supplementary Material
+# VocalGrad
 
 This repository contains the reproducibility material for "VocalGrad: Evaluating Acoustic Perception in Audio Language
-Models".
+Models", accepted at the **NeurIPS 2026 Evaluations & Datasets Track**.
+
+Dataset: [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
 VocalGrad evaluates whether large audio language models can detect the direction
 of gradual acoustic change in speech. The paper uses nine categories:
