@@ -39,17 +39,17 @@ lower-level files in `scripts/run/` directly.
 
 ## Environment
 
-Create the base analysis environment first:
+Run these commands from `benchmarking-and-analysis/`. Create the base analysis
+environment, including PyTorch for linear-probe training, first:
 
 ```bash
 uv venv --python 3.10 .venv
-source .venv/bin/activate
-uv sync --extra analysis
+UV_PROJECT_ENVIRONMENT=.venv uv sync --locked --extra analysis
 ```
 
 Then create backend-specific environments as needed. See
-`docs/environment_setup.md` for Kimi-Audio, MiMo-Audio, Step-Audio-2 Mini,
-AudioFlamingo3, and Gemini details.
+[the environment setup](docs/environment_setup.md) for the experimental platform
+and Kimi-Audio, MiMo-Audio, Step-Audio-2 Mini, AudioFlamingo3, and Gemini details.
 
 For MiMo-Audio, the runtime uses the upstream `audio_understanding` generation
 path without passing local sampling parameters; the upstream defaults include

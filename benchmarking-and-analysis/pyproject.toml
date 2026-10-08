@@ -66,6 +66,8 @@ stepaudio2 = [
   "hyperpyyaml",
 ]
 analysis = [
+  "torch==2.8.0+cu129",
+  "triton==3.4.0",
   "matplotlib>=3.9",
   "seaborn>=0.13",
   "scikit-learn>=1.5",

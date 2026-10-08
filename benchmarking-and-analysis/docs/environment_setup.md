@@ -4,29 +4,39 @@ The reproduction code uses separate Python environments for heavyweight audio
 backends. This avoids incompatible `transformers`, CUDA, and model-specific
 runtime dependencies.
 
-All commands below are run from the repository root.
+All commands below are run from `benchmarking-and-analysis/`.
+
+## Our Environment
+
+Our Kimi-Audio environment uses Linux aarch64, Python 3.10.18,
+PyTorch 2.8.0+cu129, and Triton 3.4.0. The dependency configuration retains
+the CUDA 12.9 PyTorch index and the CPython 3.10 Linux aarch64 Triton wheel
+used for this environment. These installation commands target that platform.
+
+Each sync command explicitly selects the environment used by the reproduction
+scripts with `UV_PROJECT_ENVIRONMENT`; activating a virtual environment alone
+does not select the target of `uv sync`.
 
 ## Base Analysis Environment
 
-Use this environment for analysis scripts, tables, plots, and lightweight
-utilities.
+Use this environment for analysis scripts, tables, plots, and linear-probe
+training. The `analysis` extra includes PyTorch for probe training as well as
+the plotting and analysis dependencies.
 
 ```bash
 uv venv --python 3.10 .venv
-source .venv/bin/activate
-uv sync --extra analysis
+UV_PROJECT_ENVIRONMENT=.venv uv sync --locked --extra analysis
 ```
 
 ## Kimi-Audio
 
 ```bash
 uv venv --python 3.10 .venv-kimi
-source .venv-kimi/bin/activate
-uv sync --extra kimia
+UV_PROJECT_ENVIRONMENT=.venv-kimi uv sync --locked --extra kimia
 ```
 
 Kimi-Audio may require `flash-attn`. This repository does not pin a
-machine-local wheel path; if `uv sync --extra kimia` cannot build or resolve
+machine-local wheel path; if the Kimi-Audio sync command cannot build or resolve
 `flash-attn` on your platform, install a compatible wheel or source build in
 `.venv-kimi` according to your CUDA, Python, and architecture versions.
 
@@ -67,8 +77,7 @@ run manifests, but it is not passed into the MiMo-Audio generation call.
 
 ```bash
 uv venv --python 3.10 .venv-stepaudio
-source .venv-stepaudio/bin/activate
-uv sync --extra stepaudio2
+UV_PROJECT_ENVIRONMENT=.venv-stepaudio uv sync --locked --extra stepaudio2
 ```
 
 Default model id:
@@ -81,8 +90,7 @@ stepfun-ai/Step-Audio-2-mini
 
 ```bash
 uv venv --python 3.10 .venv-af3
-source .venv-af3/bin/activate
-uv sync --extra audioflamingo3
+UV_PROJECT_ENVIRONMENT=.venv-af3 uv sync --locked --extra audioflamingo3
 ```
 
 Default model id:
@@ -107,8 +115,8 @@ The runtime code applies the Gemini temperature default for Gemini 3 models.
 
 Every script under `scripts/reproduce/`:
 
-- infers the repository root from its own location
-- sets `PYTHONPATH=<repo>/src`
+- infers the `benchmarking-and-analysis/` root from its own location
+- sets `PYTHONPATH=<benchmarking-and-analysis>/src`
 - loads `.env` when present
 - avoids scheduler-specific settings
 

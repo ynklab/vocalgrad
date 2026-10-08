@@ -28,10 +28,12 @@ the scripts or placed in the documented local paths.
 ## Reproduction Order
 
 1. Build or obtain the VocalGrad dataset with
-   `data-and-annotation/README.md`.
+   [the data preparation instructions](data-and-annotation/README.md).
 2. Place the generated or downloaded data under the layout described in
-   `benchmarking-and-analysis/docs/data_setup.md`.
-3. Run the paper experiment entrypoints in
+   [the dataset layout](benchmarking-and-analysis/docs/data_setup.md).
+3. Prepare the analysis and required backend environments using
+   [the environment setup](benchmarking-and-analysis/docs/environment_setup.md).
+4. Run the paper experiment entrypoints in
    `benchmarking-and-analysis/scripts/reproduce/`.
 
 For appendix-only prompt sensitivity, cross-attribute, few-shot, and source-clip
@@ -51,7 +53,8 @@ uv run python scripts/generate_beep_source_clips.py
 uv run python scripts/generate_ablation_beep_benchmarks.py --overwrite
 
 cd ../benchmarking-and-analysis
-uv sync --extra analysis
+UV_PROJECT_ENVIRONMENT=.venv uv sync --locked --extra analysis
+UV_PROJECT_ENVIRONMENT=.venv-kimi uv sync --locked --extra kimia
 bash scripts/reproduce/01_benchmark.sh BACKEND=kimia
 bash scripts/reproduce/03_linear_probe_audio.sh
 bash scripts/reproduce/04_linear_probe_layers.sh

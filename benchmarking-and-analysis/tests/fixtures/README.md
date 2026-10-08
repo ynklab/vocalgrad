@@ -6,7 +6,6 @@ cross-attribute, fine-tuning, paraphrases, alternate sources and audio-then-quer
 Alternative-format macro-F1, probing, representation alignment and MELD use
 other evaluation protocols.
 
-Source runtime revision: `858e2aec46f9287d026f19ecc62aa1a7463a7936` (Miyabi).
 Paths are relative to `outputs/raw`. `sha256` hashes the exact file bytes;
 `id_sha256` hashes sorted clip IDs joined by a newline (no final newline).
 `n_expected` is the required clip count per file (240 for beep, 2400 otherwise).
