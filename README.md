@@ -68,3 +68,8 @@ reorganizing the code before submission.
 ## Camera-ready additions
 
 See `benchmarking-and-analysis/docs/camera_ready_experiments.md` for the published additional experiments and `data-and-annotation/docs/alternate_sources.md` for the frozen alternate-source selections.
+
+## Remaining camera-ready revisions
+
+For the evaluation rules and table/figure generation commands,
+see [the evaluation and reproduction procedure](benchmarking-and-analysis/docs/camera_ready_experiments.md#evaluation-and-analysis).

@@ -7,71 +7,9 @@ from pathlib import Path
 from typing import Any
 
 
-def _safe_div(numerator: float, denominator: float) -> float:
-    return numerator / denominator if denominator else 0.0
-
-
-def _normalize_label(value: Any) -> str | None:
-    if not isinstance(value, str):
-        return None
-    lowered = value.strip().lower()
-    if lowered in {"increase", "decrease"}:
-        return lowered
-    if lowered in {"up", "upward"}:
-        return "increase"
-    if lowered in {"down", "downward"}:
-        return "decrease"
-    return None
-
-
-def _binary_metrics(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    tp = fp = fn = tn = 0
-    total = 0
-
-    for row in rows:
-        pred = _normalize_label(row.get("prediction_label"))
-        gold = _normalize_label(row.get("gold_label"))
-        if pred is None or gold is None:
-            continue
-
-        total += 1
-        pred_pos = pred == "increase"
-        gold_pos = gold == "increase"
-
-        if pred_pos and gold_pos:
-            tp += 1
-        elif pred_pos and not gold_pos:
-            fp += 1
-        elif (not pred_pos) and gold_pos:
-            fn += 1
-        else:
-            tn += 1
-
-    accuracy = _safe_div(tp + tn, total)
-    precision = _safe_div(tp, tp + fp)
-    recall = _safe_div(tp, tp + fn)
-    f1 = _safe_div(2 * precision * recall, precision + recall)
-
-    return {
-        "total_evaluable": total,
-        "accuracy": accuracy,
-        "precision_increase": precision,
-        "recall_increase": recall,
-        "f1_increase": f1,
-        "confusion_matrix": {
-            "labels": ["increase", "decrease"],
-            "counts": {
-                "tp_increase_increase": tp,
-                "fp_increase_decrease": fp,
-                "fn_decrease_increase": fn,
-                "tn_decrease_decrease": tn,
-            },
-            "table": {
-                "pred_increase": {"gold_increase": tp, "gold_decrease": fp},
-                "pred_decrease": {"gold_increase": fn, "gold_decrease": tn},
-            },
-        },
-    }
+from .direction_evaluation import (
+    SCHEMA_VERSION, binary_metrics as _binary_metrics, read_rows, validate_rows,
+)
 
 
 def _group_metrics(rows: list[dict[str, Any]], key: str) -> dict[str, Any]:
@@ -83,6 +21,7 @@ def _group_metrics(rows: list[dict[str, Any]], key: str) -> dict[str, Any]:
 
 
 def summarize_rows(rows: list[dict[str, Any]], input_path: str) -> dict[str, Any]:
+    validate_rows(rows)
     raw_response_counter: Counter[str] = Counter()
     category_counter: Counter[str] = Counter()
 
@@ -95,7 +34,9 @@ def summarize_rows(rows: list[dict[str, Any]], input_path: str) -> dict[str, Any
     for row in rows:
         by_category[str(row.get("category", "unknown"))].append(row)
 
-    return {
+    summary = {
+        "schema_version": SCHEMA_VERSION,
+        "parser_version": "synonym-unique-direction-v1" if any(r.get("answer_words") for r in rows) else "main-unique-direction-v1",
         "input": input_path,
         "total_rows": len(rows),
         "by_category_count": dict(category_counter),
@@ -110,14 +51,17 @@ def summarize_rows(rows: list[dict[str, Any]], input_path: str) -> dict[str, Any
         "raw_response_top20": dict(raw_response_counter.most_common(20)),
     }
 
+    for key in ("actual_attribute", "prompt_attribute", "model_id", "backend", "prompt_variant", "answer_words"):
+        values = [r.get(key) for r in rows]
+        if values and values[0] is not None and all(value == values[0] for value in values):
+            summary[key] = values[0]
+    if "actual_attribute" in summary and "prompt_attribute" in summary:
+        summary["evaluation_type"] = "vocalgrad_cross_attribute"
+    return summary
+
 
 def summarize_vocalgrad_file(input_path: Path, out_path: Path) -> dict[str, Any]:
-    rows: list[dict[str, Any]] = []
-    with input_path.open("r", encoding="utf-8") as f:
-        for line in f:
-            if not line.strip():
-                continue
-            rows.append(json.loads(line))
+    rows = read_rows(input_path)
 
     summary = summarize_rows(rows, str(input_path))
     out_path.parent.mkdir(parents=True, exist_ok=True)

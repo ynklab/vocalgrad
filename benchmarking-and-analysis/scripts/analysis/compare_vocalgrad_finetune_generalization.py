@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from plic.kimi_common import DEFAULT_MODEL_ID
+DEFAULT_MODEL_ID = "moonshotai/Kimi-Audio-7B-Instruct"
 from plic.kimi_finetune import DEFAULT_KIMI_FINETUNE_ANALYSIS_ROOT, model_stem_for, resolve_categories
 
 
@@ -15,6 +15,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--root", type=Path, default=DEFAULT_KIMI_FINETUNE_ANALYSIS_ROOT)
     parser.add_argument("--run-name", default="default")
     parser.add_argument("--model-id", default=DEFAULT_MODEL_ID)
+    parser.add_argument("--categories", nargs="+", help="Category order for saved-result analysis without audio")
     parser.add_argument("--test-dataset-root", type=Path, default=Path("datasets/vocalgrad/test"))
     parser.add_argument("--base-root", type=Path, default=Path("outputs/analysis/vocalgrad/default"))
     parser.add_argument("--out-dir", type=Path, default=None)
@@ -66,6 +67,8 @@ def load_records(root: Path, run_name: str, model_stem: str, categories: list[st
                     base_accuracy = base_metrics[test_category].get("accuracy")
                 records.append(
                     {
+                        "schema_version": "vocalgrad-all-clips-v1",
+                        "metric": "accuracy_all_clips",
                         "scope": scope,
                         "train_category": train_category,
                         "test_category": test_category,
@@ -141,7 +144,7 @@ def write_markdown(df: pd.DataFrame, out_path: Path) -> None:
 def main() -> None:
     args = build_parser().parse_args()
     model_stem = model_stem_for(args.model_id)
-    categories = resolve_categories(args.test_dataset_root, None)
+    categories = args.categories or resolve_categories(args.test_dataset_root, None)
     out_dir = args.out_dir or (args.root / "_comparisons" / args.run_name)
     out_dir.mkdir(parents=True, exist_ok=True)
 

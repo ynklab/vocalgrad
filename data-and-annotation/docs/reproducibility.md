@@ -75,8 +75,7 @@ Expected synthetic beep ablation sizes:
 ## Data Access
 
 Generated benchmark audio is not tracked in git. It can be either regenerated
-locally from VCTK or downloaded from the anonymized dataset URL supplied with
-the submission.
+locally from VCTK or downloaded from [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
 The local generation commands are documented in
 [pipeline_runbook.md](pipeline_runbook.md).

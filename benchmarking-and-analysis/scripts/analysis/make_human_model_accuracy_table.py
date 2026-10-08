@@ -186,18 +186,9 @@ def collect_human_accuracies(annotation_root: Path) -> dict[str, dict]:
     return summaries
 
 
-LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
 
 
-def parse_direction_label(raw_text: object) -> str | None:
-    tokens = LABEL_RE.findall(str(raw_text or "").strip().lower())
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from evaluation_common import parse_direction_label, prediction_for_row
 
 
 def find_raw_prediction_file(raw_roots: list[Path], category: str, model_name: str) -> Path | None:
@@ -214,7 +205,7 @@ def accuracy_from_raw_file(path: Path) -> float | None:
     total = 0
     for row in read_jsonl(path):
         total += 1
-        pred = parse_direction_label(row.get("raw_response"))
+        pred = prediction_for_row(row)
         gold = normalize_label(row.get("gold_label"))
         if pred is None or gold is None:
             continue

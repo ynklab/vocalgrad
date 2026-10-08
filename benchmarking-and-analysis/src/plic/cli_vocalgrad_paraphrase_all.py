@@ -100,43 +100,7 @@ PROMPTS: dict[str, list[PromptVariant]] = {
     ],
 }
 
-INCREASE_WORDS = {
-    "increase",
-    "increases",
-    "increasing",
-    "rise",
-    "rises",
-    "rising",
-    "upward",
-    "upwards",
-    "faster",
-    "accelerate",
-    "accelerates",
-    "accelerating",
-}
-DECREASE_WORDS = {
-    "decrease",
-    "decreases",
-    "decreasing",
-    "fall",
-    "falls",
-    "falling",
-    "downward",
-    "downwards",
-    "slower",
-    "decline",
-    "declines",
-    "declining",
-    "decelerate",
-    "decelerates",
-    "decelerating",
-}
-ANSWER_RE = re.compile(
-    r"\b("
-    + "|".join(sorted(INCREASE_WORDS | DECREASE_WORDS, key=len, reverse=True))
-    + r")\b",
-    re.IGNORECASE,
-)
+from .direction_evaluation import INCREASE_WORDS, DECREASE_WORDS, ANSWER_RE, parse_paraphrase_label
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -168,18 +132,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--gemini-output-usd-per-1m", type=float, default=None)
     parser.add_argument("--raise-on-error", action="store_true")
     return parser
-
-
-def parse_paraphrase_label(raw_text: str) -> str | None:
-    text = raw_text.strip().lower()
-    if text in INCREASE_WORDS:
-        return "increase"
-    if text in DECREASE_WORDS:
-        return "decrease"
-    match = ANSWER_RE.search(text)
-    if not match:
-        return None
-    return "increase" if match.group(1).lower() in INCREASE_WORDS else "decrease"
 
 
 def _row(

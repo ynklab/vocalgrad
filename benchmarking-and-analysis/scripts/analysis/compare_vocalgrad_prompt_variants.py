@@ -92,7 +92,14 @@ def table(headers: list[str], rows: list[list[str]]) -> list[str]:
 
 
 def main() -> None:
-    variant_data = {variant: load_variant(BASE / variant) for variant in VARIANTS}
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=BASE)
+    parser.add_argument("--out", type=Path, default=None)
+    args = parser.parse_args()
+    base = args.root
+    out = args.out or base / "prompt_sensitivity_summary.md"
+    variant_data = {variant: load_variant(base / variant) for variant in VARIANTS}
     models = all_models(variant_data)
     mean_rows: list[list[str]] = []
     best_variant_rows: list[list[str]] = []
@@ -191,8 +198,8 @@ def main() -> None:
         leader_rows,
     ))
 
-    OUT.write_text('\n'.join(lines) + '\n', encoding='utf-8')
-    print(f'wrote {OUT}')
+    out.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+    print(f'wrote {out}')
 
 
 if __name__ == '__main__':

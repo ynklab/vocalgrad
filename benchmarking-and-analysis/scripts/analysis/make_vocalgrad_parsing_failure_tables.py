@@ -52,7 +52,6 @@ MODEL_DISPLAY_NAMES = {
     "step-audio-2-mini": "Step-Audio-2 Mini",
 }
 
-LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
 DEFAULT_RAW_ROOTS = [
     Path("outputs/raw/vocalgrad/default"),
     Path("outputs/raw/vocalgrad/audio-ref"),
@@ -119,15 +118,7 @@ def normalize_output(value: object) -> str:
     return str(value or "").strip().lower()
 
 
-def parse_direction_label(raw_text: object) -> str | None:
-    tokens = LABEL_RE.findall(normalize_output(raw_text))
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from evaluation_common import parse_direction_label, prediction_for_row
 
 
 def latex_escape(text: object) -> str:
@@ -172,7 +163,7 @@ def exact_rate(rows: list[dict[str, Any]]) -> float:
 def parser_match_rate(rows: list[dict[str, Any]]) -> float:
     count = 0
     for row in rows:
-        count += int(parse_direction_label(row.get("raw_response")) is not None)
+        count += int(prediction_for_row(row) is not None)
     return count / len(rows) if rows else 0.0
 
 

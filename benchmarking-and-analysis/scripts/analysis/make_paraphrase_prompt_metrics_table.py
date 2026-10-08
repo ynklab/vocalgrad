@@ -52,7 +52,7 @@ def main() -> None:
     lines = [
         "# Paraphrase question comparison",
         "",
-        f"Model: {args.model}. Increase ratio is the fraction of all evaluable clips predicted as increase after normalizing each prompt's natural answer words.",
+        f"Model: {args.model}. Accuracy uses all clips (invalid answers are incorrect). Increase ratio uses only parsed answers, after normalizing the paraphrase answer vocabulary.",
         "",
         "| Category | Query pattern | Accuracy | Increase ratio |",
         "|---|---|---:|---:|",

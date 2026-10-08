@@ -4,8 +4,8 @@ This directory contains the data-construction and human-annotation utilities for
 VocalGrad, a benchmark for evaluating whether audio language models can detect
 the direction of gradual acoustic change in speech.
 
-During anonymous review, use the dataset URL supplied with the submission or
-regenerate the dataset locally from VCTK.
+The published dataset is available at [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
+You can also regenerate the dataset locally from VCTK.
 
 This directory focuses on reproducing the dataset and annotation assets. Model
 benchmarking, representation probing, and LoRA fine-tuning scripts are in the
@@ -150,8 +150,7 @@ Prepare the test-only public release:
 uv run python scripts/prepare_vocalgrad_public.py
 ```
 
-The generated public dataset can also be downloaded from the anonymized dataset
-URL supplied with the submission.
+The generated public dataset can also be downloaded from [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
 ## Human Annotation
 

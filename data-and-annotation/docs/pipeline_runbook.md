@@ -15,8 +15,7 @@ sibling `benchmarking-and-analysis/` directory.
 - VCTK 0.92 is available at `data/original/VCTK-Corpus`
 - Generated audio under `data/processed/` is not tracked by git
 
-The generated public dataset can also be downloaded from the anonymized dataset
-URL supplied with the submission.
+The generated public dataset can also be downloaded from [ynklab/vocalgrad on Hugging Face](https://huggingface.co/datasets/ynklab/vocalgrad).
 
 ## Quick Start
 

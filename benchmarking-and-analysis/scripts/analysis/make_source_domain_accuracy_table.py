@@ -40,7 +40,7 @@ for dataset, root in [
     scores = {}
     for category in CATS:
         payload = json.loads((root / category / "kimi-audio.json").read_text())
-        if payload["overall"]["total_evaluable"] <= 0:
+        if payload["overall"]["total_rows"] <= 0:
             raise ValueError("No evaluable clips")
         scores[category] = float(payload["overall"]["accuracy"])
     rows.append({"dataset": dataset, "average": sum(scores.values()) / 9, **scores})

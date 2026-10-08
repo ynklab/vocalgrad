@@ -68,6 +68,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/epoch1/in_domain_accuracy_results_table_4models.csv"),
     )
+    parser.add_argument("--comparison-root", type=Path, default=None, help="Root containing per-run generalization_records.csv")
     parser.add_argument("--metric", default="accuracy", choices=["accuracy", "balanced_accuracy"])
     parser.add_argument(
         "--exclude-category",
@@ -82,6 +83,8 @@ def read_diagonal(path: Path, scope: str, metric: str) -> dict[str, float]:
     with path.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            if row.get("schema_version") != "vocalgrad-all-clips-v1" or row.get("metric") != "accuracy_all_clips":
+                raise ValueError("Regenerate generalization_records.csv from current summaries first")
             if row.get("scope") != scope:
                 continue
             train_category = row.get("train_category")
@@ -209,6 +212,9 @@ def write_latex(path: Path, rows: list[dict[str, object]], categories: list[str]
 
 def main() -> None:
     args = parse_args()
+    if args.comparison_root is not None:
+        for key, path in list(DEFAULT_RECORDS.items()):
+            DEFAULT_RECORDS[key] = args.comparison_root / path.parent.name / path.name
     excluded_categories = set(args.exclude_category)
     categories = [category for category in DEFAULT_CATEGORY_ORDER if category not in excluded_categories]
     rows = build_rows(categories, args.metric)

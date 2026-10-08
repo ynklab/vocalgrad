@@ -61,21 +61,23 @@ p.add_argument(
     type=Path,
     default=Path("outputs/analysis/vocalgrad/default/trajectory_accuracy.csv"),
 )
+p.add_argument("--models-only", action="store_true", help="Omit human row when annotations are unavailable")
 a = p.parse_args()
 rows = []
-human = {c: [] for c in CURVES}
-for category in CATS:
-    files = sorted(
-        (a.annotation_root / category / "shared_annotation_50").glob(
-            "annotator_*.jsonl"
+if not a.models_only:
+    human = {c: [] for c in CURVES}
+    for category in CATS:
+        files = sorted(
+            (a.annotation_root / category / "shared_annotation_50").glob(
+                "annotator_*.jsonl"
+            )
         )
-    )
-    if not files:
-        raise FileNotFoundError(f"No human files for {category}")
-    rs = [records(f) for f in files]
-    for c in CURVES:
-        human[c].append(mean(accuracy(r, c) for r in rs))
-rows.append({"model": "Human Avg.", **{c: mean(human[c]) for c in CURVES}})
+        if not files:
+            raise FileNotFoundError(f"No human files for {category}")
+        rs = [records(f) for f in files]
+        for c in CURVES:
+            human[c].append(mean(accuracy(r, c) for r in rs))
+    rows.append({"model": "Human Avg.", **{c: mean(human[c]) for c in CURVES}})
 for model in MODELS:
     scores = {c: [] for c in CURVES}
     for category in CATS:

@@ -33,7 +33,6 @@ CATEGORY_ABBREVIATIONS = {
     "voice_vibration": "vibration",
 }
 
-LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
 
 
 def parse_args() -> argparse.Namespace:
@@ -159,19 +158,11 @@ def read_jsonl(path: Path) -> list[dict]:
     return rows
 
 
-def parse_direction_label(raw_text: object) -> str | None:
-    tokens = LABEL_RE.findall(str(raw_text or "").strip().lower())
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from evaluation_common import parse_direction_label, prediction_for_row
 
 
 def increase_rate_from_rows(rows: list[dict]) -> float | None:
-    parsed = [parse_direction_label(row.get("raw_response")) for row in rows]
+    parsed = [prediction_for_row(row) for row in rows]
     parsed = [label for label in parsed if label is not None]
     if not parsed:
         return None

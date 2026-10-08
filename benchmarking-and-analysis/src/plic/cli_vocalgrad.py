@@ -191,21 +191,7 @@ def default_temperature(backend: str, model_id: str) -> float:
     return 0.0
 
 
-def parse_direction_label(raw_text: str) -> str | None:
-    lowered = raw_text.strip().lower()
-    if lowered in {"increase", "decrease"}:
-        return lowered
-    if lowered in {"increases", "decreases"}:
-        return "increase" if lowered == "increases" else "decrease"
-
-    tokens = re.findall(r"\b(increase|decrease|increases|decreases)\b", lowered)
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from .direction_evaluation import parse_direction_label
 
 
 def maybe_retry_same_prompt(

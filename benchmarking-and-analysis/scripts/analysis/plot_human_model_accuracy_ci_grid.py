@@ -63,7 +63,6 @@ MODEL_DISPLAY_NAMES = {
     "step-audio-2-mini": "Step-Audio-2 Mini",
 }
 
-LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
 
 
 def parse_args() -> argparse.Namespace:
@@ -124,15 +123,7 @@ def normalize_label(value: object) -> str | None:
     }.get(text, text)
 
 
-def parse_direction_label(raw_text: object) -> str | None:
-    tokens = LABEL_RE.findall(str(raw_text or "").strip().lower())
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from evaluation_common import parse_direction_label, prediction_for_row
 
 
 def find_raw_file(raw_roots: list[Path], category: str, model_name: str) -> Path | None:
@@ -163,7 +154,7 @@ def model_correctness(raw_roots: list[Path], category: str, model_name: str) -> 
         return np.asarray([], dtype=np.int8)
     values: list[int] = []
     for row in read_jsonl(path):
-        pred = parse_direction_label(row.get("raw_response"))
+        pred = prediction_for_row(row)
         gold = normalize_label(row.get("gold_label"))
         values.append(int(pred is not None and gold is not None and pred == gold))
     return np.asarray(values, dtype=np.int8)

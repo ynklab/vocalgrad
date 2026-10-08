@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from .cli_vocalgrad import build_prompt
-from .linear_probe import slugify_model_id
 from .vocalgrad import VocalGradSample, list_vocalgrad_categories, load_local_vocalgrad_samples
 
 DEFAULT_KIMI_FINETUNE_DATA_ROOT = Path("outputs/data/vocalgrad_finetune")
@@ -61,6 +59,9 @@ class DirectionMetrics:
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "schema_version": "vocalgrad-all-clips-v1",
+            "metric": "accuracy_all_clips",
+            "accuracy_all": self.accuracy,
             "accuracy": self.accuracy,
             "balanced_accuracy": self.balanced_accuracy,
             "accuracy_up": self.accuracy_up,
@@ -109,57 +110,16 @@ def normalize_direction_label(value: Any) -> str | None:
 
 
 def summarize_direction_rows(rows: list[dict[str, Any]]) -> DirectionMetrics:
-    evaluable = 0
-    parsed_rows = 0
-    correct_rows = 0
-    up_total = 0
-    down_total = 0
-    up_correct = 0
-    down_correct = 0
-
-    for row in rows:
-        pred = normalize_direction_label(row.get("prediction_label"))
-        gold = normalize_direction_label(row.get("gold_label"))
-        if pred is not None:
-            parsed_rows += 1
-        if pred is None or gold is None:
-            continue
-        evaluable += 1
-        if pred == gold:
-            correct_rows += 1
-        if gold == "increase":
-            up_total += 1
-            if pred == gold:
-                up_correct += 1
-        elif gold == "decrease":
-            down_total += 1
-            if pred == gold:
-                down_correct += 1
-
-    accuracy = float(correct_rows / evaluable) if evaluable else 0.0
-    accuracy_up = (up_correct / up_total) if up_total else None
-    accuracy_down = (down_correct / down_total) if down_total else None
-    balanced_parts = [value for value in (accuracy_up, accuracy_down) if value is not None]
-    balanced_accuracy = float(sum(balanced_parts) / len(balanced_parts)) if balanced_parts else accuracy
-    return DirectionMetrics(
-        accuracy=accuracy,
-        balanced_accuracy=balanced_accuracy,
-        accuracy_up=accuracy_up,
-        accuracy_down=accuracy_down,
-        total_evaluable=evaluable,
-        total_rows=len(rows),
-        parsed_rows=parsed_rows,
-        correct_rows=correct_rows,
-    )
+    from .direction_evaluation import binary_metrics, validate_rows
+    validate_rows(rows)
+    metrics = binary_metrics(rows)
+    return DirectionMetrics(**{key: metrics[key] for key in DirectionMetrics.__dataclass_fields__})
 
 
 def summarize_prediction_file(input_path: Path, out_path: Path, extra: dict[str, Any] | None = None) -> dict[str, Any]:
     rows = read_jsonl(input_path)
-    metrics = summarize_direction_rows(rows)
-    payload: dict[str, Any] = {
-        "input": str(input_path),
-        "overall": metrics.to_dict(),
-    }
+    from .cli_summarize_vocalgrad import summarize_rows
+    payload = summarize_rows(rows, str(input_path))
     if extra:
         payload.update(extra)
     write_json(out_path, payload)
@@ -177,6 +137,7 @@ def resolve_categories(dataset_root: Path, categories: list[str] | None) -> list
 
 
 def make_finetune_examples(samples: Iterable[VocalGradSample]) -> list[FineTuneExample]:
+    from .cli_vocalgrad import build_prompt
     return [
         FineTuneExample(
             category=sample.category,
@@ -338,4 +299,5 @@ def collect_lora_target_modules(model: object, scope: str) -> list[str]:
 
 
 def model_stem_for(model_id: str) -> str:
+    from .model_names import slugify_model_id
     return slugify_model_id(model_id)

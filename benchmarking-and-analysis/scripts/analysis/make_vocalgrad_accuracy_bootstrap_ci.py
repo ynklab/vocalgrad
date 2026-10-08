@@ -54,7 +54,6 @@ MODEL_DISPLAY_NAMES = {
     "step-audio-2-mini": "Step-Audio-2 Mini",
 }
 
-LABEL_RE = re.compile(r"\b(increase|decrease|increases|decreases)\b")
 DEFAULT_RAW_ROOTS = [
     Path("outputs/raw/vocalgrad/default"),
     Path("outputs/raw/vocalgrad/audio-ref"),
@@ -128,21 +127,13 @@ def normalize_label(value: object) -> str | None:
     }.get(text, text)
 
 
-def parse_direction_label(raw_text: object) -> str | None:
-    tokens = LABEL_RE.findall(str(raw_text or "").strip().lower())
-    labels = {
-        "increase" if token in {"increase", "increases"} else "decrease"
-        for token in tokens
-    }
-    if len(labels) != 1:
-        return None
-    return next(iter(labels))
+from evaluation_common import parse_direction_label, prediction_for_row
 
 
 def correctness_vector(rows: list[dict[str, Any]]) -> np.ndarray:
     values = []
     for row in rows:
-        pred = parse_direction_label(row.get("raw_response"))
+        pred = prediction_for_row(row)
         gold = normalize_label(row.get("gold_label"))
         values.append(1 if pred is not None and gold is not None and pred == gold else 0)
     return np.asarray(values, dtype=np.int8)

@@ -25,7 +25,7 @@ source .venv-kimi/bin/activate
 uv sync --extra kimia
 ```
 
-Kimi-Audio may require `flash-attn`. This anonymized repository does not pin a
+Kimi-Audio may require `flash-attn`. This repository does not pin a
 machine-local wheel path; if `uv sync --extra kimia` cannot build or resolve
 `flash-attn` on your platform, install a compatible wheel or source build in
 `.venv-kimi` according to your CUDA, Python, and architecture versions.

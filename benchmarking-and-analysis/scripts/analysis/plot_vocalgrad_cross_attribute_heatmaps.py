@@ -53,6 +53,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path("outputs/analysis/vocalgrad_cross_attribute/default"),
     )
     parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--categories", nargs="+", help="Explicit category order for analysis without local audio manifests")
     parser.add_argument("--dataset-root", type=Path, default=Path("datasets/vocalgrad/test"))
     parser.add_argument("--font-size", type=float, default=20.0)
     parser.add_argument("--font-weight", default="bold")
@@ -201,7 +202,7 @@ def main() -> None:
         }
     )
 
-    categories = resolve_categories(args.dataset_root, None)
+    categories = args.categories or resolve_categories(args.dataset_root, None)
     excluded_categories = set(args.exclude_category)
     if excluded_categories:
         records = [

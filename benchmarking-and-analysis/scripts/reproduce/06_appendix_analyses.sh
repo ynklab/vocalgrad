@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 set -euo pipefail
+# Aggregate predictions with 16_aggregate_results.sh before generating tables.
+# Point BENCHMARK_ANALYSIS_ROOT, PROMPT_ROOT, CROSS_ATTRIBUTE_ROOT and
+# FEWSHOT_ROOT below at that tree.
 
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 
@@ -55,7 +58,7 @@ FEWSHOT_RUN_NAME="${FEWSHOT_RUN_NAME:-fewshot_2x2_seed1234_audio-ref}"
   --out-tex "$SOURCE_BIAS_ANALYSIS_ROOT/original_vs_source_increase_response_summary.tex" \
   --out-csv "$SOURCE_BIAS_ANALYSIS_ROOT/original_vs_source_increase_response_summary.csv"
 
-"$ANALYSIS_PYTHON_BIN" scripts/analysis/compare_vocalgrad_prompt_variants.py
+"$ANALYSIS_PYTHON_BIN" scripts/analysis/compare_vocalgrad_prompt_variants.py --root "$PROMPT_ROOT"
 
 "$ANALYSIS_PYTHON_BIN" scripts/analysis/compare_vocalgrad_cross_attribute.py \
   --root "$CROSS_ATTRIBUTE_ROOT/default" \
