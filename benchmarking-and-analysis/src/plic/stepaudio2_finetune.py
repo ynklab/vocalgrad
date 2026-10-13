@@ -120,3 +120,45 @@ def compute_stepaudio2_text_loss(runtime: StepAudio2Runtime, batch: dict[str, An
     flat_mask = loss_mask.view(-1).float()
     denom = flat_mask.sum().clamp(min=1.0)
     return (flat_loss * flat_mask).sum() / denom
+
+
+def configure_stepaudio2_training(model: Any, *, gradient_checkpointing: bool = True) -> None:
+    """Configure fresh and resumed LoRA training identically.
+
+    The upstream audio modules use reentrant checkpointing on frozen inputs,
+    and their checkpointed adapter branch omits GELU. Wrap the normal forward
+    instead, with non-reentrant checkpointing, and use the decoder's native
+    non-reentrant implementation. No input-embedding require-grad hook is
+    needed (it conflicts with upstream in-place audio insertion).
+    """
+    from types import MethodType
+    import torch
+    from torch.utils.checkpoint import checkpoint
+
+    base = model.get_base_model() if hasattr(model, "get_base_model") else model
+    if hasattr(base, "_require_grads_hook"):
+        base.disable_input_require_grads()
+
+    def checkpointed_forward(module, *args, **kwargs):
+        forward = module._vocalgrad_normal_forward
+        if module.training and torch.is_grad_enabled() and module._vocalgrad_checkpoint_enabled:
+            return checkpoint(forward, *args, use_reentrant=False, **kwargs)
+        return forward(*args, **kwargs)
+
+    for module in (base.encoder, base.adapter):
+        # Keep upstream's inner checkpoint branches disabled, including on resume.
+        module.gradient_checkpointing = False
+        if not hasattr(module, "_vocalgrad_normal_forward"):
+            module._vocalgrad_normal_forward = module.forward
+            module.forward = MethodType(checkpointed_forward, module)
+        module._vocalgrad_checkpoint_enabled = gradient_checkpointing
+
+    if gradient_checkpointing:
+        base.model.gradient_checkpointing_enable(
+            gradient_checkpointing_kwargs={"use_reentrant": False}
+        )
+    else:
+        base.model.gradient_checkpointing_disable()
+    base.config.use_cache = False
+    base.model.config.use_cache = False
+    model.train()

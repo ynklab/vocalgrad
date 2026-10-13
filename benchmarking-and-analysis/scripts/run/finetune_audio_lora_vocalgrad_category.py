@@ -34,6 +34,7 @@ from plic.kimi_finetune import (
 )
 from plic.stepaudio2_finetune import (
     STEPAUDIO2_FINETUNE_SCOPE_CHOICES,
+    configure_stepaudio2_training,
     build_stepaudio2_inputs,
     collect_stepaudio2_lora_target_modules,
     compute_stepaudio2_text_loss,
@@ -140,6 +141,7 @@ def _prepare_model_and_runtime(args: argparse.Namespace, experiment_dir: Path):
     elif args.backend == "stepaudio2":
         if resume_adapter_dir.exists() and _resume_state_path(experiment_dir).exists():
             runtime = load_stepaudio2_runtime(args.model_id, adapter_path=resume_adapter_dir, trainable_adapter=True)
+            configure_stepaudio2_training(runtime.llm)
             return runtime, runtime.llm, True
         runtime = load_stepaudio2_runtime(args.model_id)
         target_modules = collect_stepaudio2_lora_target_modules(runtime.llm, args.scope)
@@ -161,6 +163,10 @@ def _prepare_model_and_runtime(args: argparse.Namespace, experiment_dir: Path):
     else:
         runtime.llm = get_peft_model(runtime.llm, config)
         model = runtime.llm
+
+    if args.backend == "stepaudio2":
+        configure_stepaudio2_training(model)
+        return runtime, model, False
 
     if hasattr(model, "gradient_checkpointing_enable"):
         model.gradient_checkpointing_enable()
@@ -322,6 +328,8 @@ def main() -> None:
             "train_label_counts": _count_labels(train_examples),
             "val_label_counts": _count_labels(val_examples),
             "resumed": resumed,
+            "stepaudio2_checkpointing": "non_reentrant_normal_forward_v1" if args.backend == "stepaudio2" else None,
+            "system_prompt": None if args.backend == "stepaudio2" else "backend_default",
         },
     )
     if hasattr(model, "print_trainable_parameters"):
