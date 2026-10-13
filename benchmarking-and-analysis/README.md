@@ -127,6 +127,6 @@ The required generation commands are listed in `docs/paper_experiments.md`.
 Use `MAX_SAMPLES`, `MAX_SAMPLES_PER_CATEGORY`, or `MAX_EVAL_SAMPLES` for small
 local checks before running full experiments.
 
-## Camera-ready experiments
+## Paper experiments
 
-The additional paper experiments follow the existing `scripts/reproduce/`, `scripts/run/`, and `scripts/analysis/` layout. See `docs/camera_ready_experiments.md` for commands and table/figure mappings.
+The main and appendix experiments use the `scripts/reproduce/`, `scripts/run/`, and `scripts/analysis/` layout. See `docs/paper_experiments.md` for commands and table/figure mappings.

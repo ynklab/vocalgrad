@@ -49,7 +49,7 @@ for input_order in "${input_order_array[@]}"; do
         --out-root "$FEATURE_ROOT" --categories "${category_array[@]}")
       [[ -n "$MAX_SAMPLES_PER_CATEGORY" ]] && cmd+=(--max-samples-per-category "$MAX_SAMPLES_PER_CATEGORY")
       [[ "$OVERWRITE" == 1 ]] && cmd+=(--overwrite)
-      printf '[rebuttal:extract] '; printf '%q ' "${cmd[@]}"; printf '\n'
+      printf '[experiment:extract] '; printf '%q ' "${cmd[@]}"; printf '\n'
       "${cmd[@]}"
     done
   fi
@@ -58,7 +58,7 @@ for input_order in "${input_order_array[@]}"; do
       --train-root "$FEATURE_ROOT/$input_order/train" --test-root "$FEATURE_ROOT/$input_order/test"
       --model-stem kimi-audio --analysis-root "$ANALYSIS_ROOT" --input-order "$input_order"
       --run-name "$RUN_NAME" --categories "${category_array[@]}")
-    printf '[rebuttal:train] '; printf '%q ' "${train_cmd[@]}"; printf '\n'
+    printf '[experiment:train] '; printf '%q ' "${train_cmd[@]}"; printf '\n'
     "${train_cmd[@]}"
   fi
 done

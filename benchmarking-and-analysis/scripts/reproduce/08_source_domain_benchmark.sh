@@ -20,5 +20,5 @@ cmd=(env "BACKEND=$BACKEND" "DATASET_ROOT=$DATASET_ROOT" "RAW_ROOT=$RAW_ROOT" "A
 [[ -n "${MAX_NEW_TOKENS:-}" ]] && cmd+=("MAX_NEW_TOKENS=$MAX_NEW_TOKENS")
 [[ -n "${TEMPERATURE:-}" ]] && cmd+=("TEMPERATURE=$TEMPERATURE")
 cmd+=(bash scripts/reproduce/01_benchmark.sh)
-printf '[rebuttal:variant-benchmark] '; printf '%q ' "${cmd[@]}"; printf '\n'
+printf '[experiment:variant-benchmark] '; printf '%q ' "${cmd[@]}"; printf '\n'
 "${cmd[@]}"

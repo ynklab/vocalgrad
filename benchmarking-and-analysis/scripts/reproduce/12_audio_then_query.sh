@@ -53,7 +53,7 @@ if [[ -n "$OUT_STEM" ]]; then
   cmd+=(--out-stem "$OUT_STEM")
 fi
 
-printf '[rebuttal:benchmark-audio-then-text] command:'
+printf '[experiment:benchmark-audio-then-text] command:'
 printf ' %q' "${cmd[@]}"
 printf '\n'
 "${cmd[@]}"

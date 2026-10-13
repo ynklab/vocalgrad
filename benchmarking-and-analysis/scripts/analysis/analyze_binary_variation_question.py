@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Summarize the binary VocalGrad variation-question rebuttal experiment."""
+"""Summarize the binary VocalGrad variation-question experiment."""
 
 from __future__ import annotations
 

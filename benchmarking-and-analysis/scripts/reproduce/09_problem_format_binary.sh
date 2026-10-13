@@ -26,5 +26,5 @@ cmd=("$PYTHON_BIN" -m plic.cli_vocalgrad_variation_binary_all --backend "$BACKEN
 [[ -n "$MAX_SOURCE_CLIPS" ]] && cmd+=(--max-source-clips "$MAX_SOURCE_CLIPS")
 [[ -n "$TEMPERATURE" ]] && cmd+=(--temperature "$TEMPERATURE")
 [[ -n "$OUT_STEM" ]] && cmd+=(--out-stem "$OUT_STEM")
-printf '[rebuttal:binary-variation-question] command:'; printf ' %q' "${cmd[@]}"; printf '\n'
+printf '[experiment:binary-variation-question] command:'; printf ' %q' "${cmd[@]}"; printf '\n'
 "${cmd[@]}"

@@ -239,7 +239,7 @@ def _extract_one(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Extract Kimi decoder representations for rebuttal probing."
+        description="Extract Kimi decoder representations for token-position probing."
     )
     parser.add_argument(
         "--dataset-root", type=Path, default=REPO_ROOT / DEFAULT_VOCALGRAD_DATASET_ROOT
@@ -347,7 +347,7 @@ def main() -> None:
         ),
         encoding="utf-8",
     )
-    print(f"wrote Kimi rebuttal features to {out_dir}")
+    print(f"wrote Kimi features to {out_dir}")
 
 
 if __name__ == "__main__":

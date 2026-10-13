@@ -18,7 +18,7 @@ from plic.linear_probe import evaluate_probe, train_logistic_probe  # noqa: E402
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Train Kimi rebuttal probes for audio segments and text positions."
+        description="Train Kimi probes for audio segments and text positions."
     )
     parser.add_argument("--train-root", type=Path, required=True)
     parser.add_argument("--test-root", type=Path, required=True)
@@ -220,7 +220,7 @@ def main() -> None:
     (out_dir / "results.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
     )
-    print(f"wrote Kimi rebuttal probe results to {out_dir}")
+    print(f"wrote Kimi probe results to {out_dir}")
 
 
 if __name__ == "__main__":

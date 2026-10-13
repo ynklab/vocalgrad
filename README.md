@@ -36,9 +36,8 @@ the scripts or placed in the documented local paths.
 4. Run the paper experiment entrypoints in
    `benchmarking-and-analysis/scripts/reproduce/`.
 
-For appendix-only prompt sensitivity, cross-attribute, few-shot, and source-clip
-response-bias runs, see
-`benchmarking-and-analysis/docs/paper_experiments.md`.
+For all main and appendix experiments, see
+[the paper experiment guide](benchmarking-and-analysis/docs/paper_experiments.md).
 
 Useful entrypoints:
 
@@ -66,13 +65,13 @@ See the subdirectory READMEs for the full setup and expected outputs.
 ## Coding Assistance
 
 We used OpenAI Codex (https://openai.com/codex/) for coding assistance and for
-reorganizing the code before submission.
+organizing the code.
 
-## Camera-ready additions
+## Experiment and Evaluation Guides
 
-See `benchmarking-and-analysis/docs/camera_ready_experiments.md` for the published additional experiments and `data-and-annotation/docs/alternate_sources.md` for the frozen alternate-source selections.
-
-## Remaining camera-ready revisions
-
-For the evaluation rules and table/figure generation commands,
-see [the evaluation and reproduction procedure](benchmarking-and-analysis/docs/camera_ready_experiments.md#evaluation-and-analysis).
+See [the paper experiment guide](benchmarking-and-analysis/docs/paper_experiments.md)
+for commands and table/figure mappings, and
+[the evaluation procedure](benchmarking-and-analysis/docs/paper_experiments.md#evaluation-and-analysis)
+for scoring rules and result aggregation.
+The [alternate-source guide](data-and-annotation/docs/alternate_sources.md)
+describes the frozen source selections.

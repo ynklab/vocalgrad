@@ -33,7 +33,7 @@ cmd=("$PYTHON_BIN" -m plic.cli_vocalgrad_ternary_all --backend "$BACKEND" --data
 [[ -n "$TEMPERATURE" ]] && cmd+=(--temperature "$TEMPERATURE")
 [[ -n "$OUT_STEM" ]] && cmd+=(--out-stem "$OUT_STEM")
 
-printf '[rebuttal:ternary-question] command:'
+printf '[experiment:ternary-question] command:'
 printf ' %q' "${cmd[@]}"
 printf '\n'
 "${cmd[@]}"

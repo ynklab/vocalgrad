@@ -1,6 +1,6 @@
 # Evaluation reference metrics
 
-`camera_ready_direction_metrics.csv` contains reference metrics for 587 prediction
+`direction_metrics.csv` contains reference metrics for 587 prediction
 files / 1,365,600 rows: Main, prompt order/reference, trajectories, beep, few-shot,
 cross-attribute, fine-tuning, paraphrases, alternate sources and audio-then-query.
 Alternative-format macro-F1, probing, representation alignment and MELD use

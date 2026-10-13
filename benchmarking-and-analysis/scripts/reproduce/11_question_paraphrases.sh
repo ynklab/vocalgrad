@@ -23,5 +23,5 @@ cmd=("$PYTHON_BIN" -m plic.cli_vocalgrad_paraphrase_all --backend "$BACKEND" --d
 [[ -n "$MAX_SAMPLES" ]] && cmd+=(--max-samples "$MAX_SAMPLES")
 [[ -n "$TEMPERATURE" ]] && cmd+=(--temperature "$TEMPERATURE")
 [[ -n "$OUT_STEM" ]] && cmd+=(--out-stem "$OUT_STEM")
-printf '[rebuttal:paraphrase-questions] command:'; printf ' %q' "${cmd[@]}"; printf '\n'
+printf '[experiment:paraphrase-questions] command:'; printf ' %q' "${cmd[@]}"; printf '\n'
 "${cmd[@]}"
