@@ -22,11 +22,11 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _load_base_metrics(base_root: Path, categories: list[str]) -> dict[str, dict[str, float]]:
+def _load_base_metrics(base_root: Path, categories: list[str], model_stem: str) -> dict[str, dict[str, float]]:
     metrics: dict[str, dict[str, float]] = {}
     base_path = base_root
     for category in categories:
-        summary_path = base_path / category / "kimi-audio.json"
+        summary_path = base_path / category / f"{model_stem}.json"
         if not summary_path.exists():
             continue
         payload = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -148,7 +148,7 @@ def main() -> None:
     out_dir = args.out_dir or (args.root / "_comparisons" / args.run_name)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    base_metrics = _load_base_metrics(args.base_root, categories)
+    base_metrics = _load_base_metrics(args.base_root, categories, model_stem)
     df = load_records(args.root, args.run_name, model_stem, categories, base_metrics)
     df = df.sort_values(["scope", "train_category", "test_category"]).reset_index(drop=True)
     df.to_csv(out_dir / "generalization_records.csv", index=False)

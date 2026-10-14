@@ -195,7 +195,7 @@ Important outputs:
 - Cross-category analysis:
   `outputs/analysis/vocalgrad_finetune_eval/<model_stem>/<run_name>/<scope>/<category>/`
 - Aggregated comparison:
-  `outputs/analysis/vocalgrad_finetune_eval/_comparisons/<run_name>/`
+  `outputs/analysis/vocalgrad_finetune_eval/_comparisons/<model_stem>/<run_name>/`
 - Fine-tuned Kimi probing plots:
   `outputs/analysis/kimi_finetuned_probe_completed/<run_name>/`
 
@@ -447,3 +447,22 @@ For `06_appendix_analyses.sh`, set `BENCHMARK_ANALYSIS_ROOT`, `PROMPT_ROOT`,
 `CROSS_ATTRIBUTE_ROOT` and `FEWSHOT_ROOT` to the corresponding summary directories.
 Fine-tuning comparison CSVs are generated before the four-model table;
 `--comparison-root` selects their directory.
+
+### Generation and scoring conditions
+
+Direction generation retries once with the same prompt only when no whole-word
+`increase(s)` or `decrease(s)` occurs. A response containing both directions does
+not trigger a retry, but is counted as incorrect by final scoring. This retry rule applies to all models. Final
+accuracy always requires exactly one direction and includes all target clips.
+
+For the unmodified-source response-bias experiment, open models use 16 initial
+and 32 retry tokens; Gemini uses 128 and 256. The source runner selects these
+budgets by backend unless explicitly overridden. Table 9 uses parsed responses
+as the denominator, including when generating from summary JSON.
+
+The fine-tuning wrapper selects model/scope-specific run names matching the
+four-model table entrypoint. Comparison files are isolated under
+`outputs/analysis/vocalgrad_finetune_eval/_comparisons/<model-stem>/<run-name>/`.
+Kimi defaults to all paper test categories; other models default to the training
+category. Set `CATEGORIES` explicitly for additional evaluations. Custom run
+names or comparison directories require corresponding table input overrides.

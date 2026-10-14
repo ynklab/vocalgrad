@@ -45,14 +45,14 @@ METHOD_DISPLAY_NAMES = {
 MODEL_ORDER = ["kimi-audio", "mimo-audio", "step-audio-2-mini", "audioflamingo3"]
 SCOPE_ORDER = ["lm_head_only", "all_linear"]
 DEFAULT_RECORDS = {
-    ("kimi-audio", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/epoch1/generalization_records.csv"),
-    ("kimi-audio", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/epoch1/generalization_records.csv"),
-    ("mimo-audio", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/mimo_lm_head_epoch1/generalization_records.csv"),
-    ("mimo-audio", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/mimo_all_linear_epoch1/generalization_records.csv"),
-    ("step-audio-2-mini", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/stepaudio2_lm_head_epoch1/generalization_records.csv"),
-    ("step-audio-2-mini", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/stepaudio2_all_linear_epoch1/generalization_records.csv"),
-    ("audioflamingo3", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/af3_lm_head_epoch1/generalization_records.csv"),
-    ("audioflamingo3", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/af3_all_linear_epoch1/generalization_records.csv"),
+    ("kimi-audio", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/kimi-audio/epoch1/generalization_records.csv"),
+    ("kimi-audio", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/kimi-audio/epoch1/generalization_records.csv"),
+    ("mimo-audio", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/mimo-audio/mimo_lm_head_epoch1/generalization_records.csv"),
+    ("mimo-audio", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/mimo-audio/mimo_all_linear_epoch1/generalization_records.csv"),
+    ("step-audio-2-mini", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/step-audio-2-mini/stepaudio2_lm_head_epoch1/generalization_records.csv"),
+    ("step-audio-2-mini", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/step-audio-2-mini/stepaudio2_all_linear_epoch1/generalization_records.csv"),
+    ("audioflamingo3", "lm_head_only"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/audioflamingo3/af3_lm_head_epoch1/generalization_records.csv"),
+    ("audioflamingo3", "all_linear"): Path("outputs/analysis/vocalgrad_finetune_eval/_comparisons/audioflamingo3/af3_all_linear_epoch1/generalization_records.csv"),
 }
 
 

@@ -26,6 +26,7 @@ from plic.cli_vocalgrad import (  # noqa: E402
     build_prompt,
     default_temperature,
     parse_direction_label,
+    should_retry_direction_response,
     print_gemini_cost,
 )
 from plic.kimi_common import AudioModelRuntime, resolve_backend, resolve_model_id  # noqa: E402
@@ -69,8 +70,8 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Summary JSON output path. Defaults to outputs/analysis/source_clips_direction_generation/<model>.json",
     )
-    parser.add_argument("--max-new-tokens", type=int, default=128)
-    parser.add_argument("--retry-max-new-tokens", type=int, default=256)
+    parser.add_argument("--max-new-tokens", type=int, default=None)
+    parser.add_argument("--retry-max-new-tokens", type=int, default=None)
     parser.add_argument("--temperature", type=float, default=None)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--concurrency", type=int, default=8)
@@ -231,7 +232,7 @@ def _run_one(
         top_k=top_k,
     )
     pred = parse_direction_label(raw_text)
-    if pred is not None:
+    if not should_retry_direction_response(raw_text):
         return pred, raw_text
 
     retry_raw_text = runtime.generate_text(
@@ -262,7 +263,7 @@ async def _run_one_async(
         top_k=top_k,
     )
     pred = parse_direction_label(raw_text)
-    if pred is not None:
+    if not should_retry_direction_response(raw_text):
         return pred, raw_text
 
     retry_raw_text = await runtime.generate_text_async(
@@ -408,6 +409,10 @@ def main() -> None:
     model_id = resolve_model_id(args.backend, args.model_id)
     backend = resolve_backend(args.backend, model_id)
     args.model_id = model_id
+    if args.max_new_tokens is None:
+        args.max_new_tokens = 128 if backend == "gemini" else 16
+    if args.retry_max_new_tokens is None:
+        args.retry_max_new_tokens = 256 if backend == "gemini" else 32
     args.temperature = (
         args.temperature if args.temperature is not None else default_temperature(backend, model_id)
     )

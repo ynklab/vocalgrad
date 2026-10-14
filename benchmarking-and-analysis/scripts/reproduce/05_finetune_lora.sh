@@ -11,14 +11,30 @@ done
 MODEL_STEM="${MODEL_STEM:-kimi-audio}"
 TRAIN_CATEGORY="${TRAIN_CATEGORY:?set TRAIN_CATEGORY, for example TRAIN_CATEGORY=volume}"
 SCOPE="${SCOPE:-lm_head_only}"
-RUN_NAME="${RUN_NAME:-epoch1}"
+case "$MODEL_STEM" in
+  kimi-audio) default_run_name=epoch1 ;;
+  mimo-audio) default_run_name=mimo ;;
+  step-audio-2-mini) default_run_name=stepaudio2 ;;
+  audioflamingo3) default_run_name=af3 ;;
+  *) echo "unsupported MODEL_STEM: $MODEL_STEM" >&2; exit 1 ;;
+esac
+if [[ "$MODEL_STEM" != "kimi-audio" ]]; then
+  scope_name="$SCOPE"
+  [[ "$SCOPE" != "lm_head_only" ]] || scope_name=lm_head
+  default_run_name="${default_run_name}_${scope_name}_epoch1"
+fi
+RUN_NAME="${RUN_NAME:-$default_run_name}"
 TRAIN_DATASET_ROOT="${TRAIN_DATASET_ROOT:-datasets/vocalgrad/train}"
 TEST_DATASET_ROOT="${TEST_DATASET_ROOT:-datasets/vocalgrad/test}"
 DATA_ROOT="${DATA_ROOT:-outputs/data/vocalgrad_finetune}"
 CHECKPOINT_ROOT="${CHECKPOINT_ROOT:-outputs/checkpoints/vocalgrad_finetune}"
 RAW_EVAL_ROOT="${RAW_EVAL_ROOT:-outputs/raw/vocalgrad_finetune_eval}"
 ANALYSIS_ROOT="${ANALYSIS_ROOT:-outputs/analysis/vocalgrad_finetune_eval}"
-CATEGORIES="${CATEGORIES:-$PAPER_CATEGORIES_DEFAULT}"
+if [[ "$MODEL_STEM" == "kimi-audio" ]]; then
+  CATEGORIES="${CATEGORIES:-$PAPER_CATEGORIES_DEFAULT}"
+else
+  CATEGORIES="${CATEGORIES:-$TRAIN_CATEGORY}"
+fi
 MAX_TRAIN_SAMPLES="${MAX_TRAIN_SAMPLES:-}"
 MAX_VAL_SAMPLES="${MAX_VAL_SAMPLES:-}"
 MAX_EVAL_SAMPLES="${MAX_EVAL_SAMPLES:-}"
@@ -37,6 +53,7 @@ SKIP_TRAIN="${SKIP_TRAIN:-0}"
 SKIP_EVAL="${SKIP_EVAL:-0}"
 RUN_COMPARE="${RUN_COMPARE:-1}"
 ANALYSIS_PYTHON_BIN="${ANALYSIS_PYTHON_BIN:-.venv/bin/python}"
+COMPARISON_DIR="${COMPARISON_DIR:-$ANALYSIS_ROOT/_comparisons/$MODEL_STEM/$RUN_NAME}"
 
 backend="$(resolve_backend_for_model_stem "$MODEL_STEM")"
 model_id="$(resolve_model_id_for_model_stem "$MODEL_STEM")"
@@ -159,10 +176,10 @@ if [[ "$RUN_COMPARE" == "1" ]]; then
     --root "$ANALYSIS_ROOT" \
     --run-name "$RUN_NAME" \
     --model-id "$model_id" \
-    --out-dir "$ANALYSIS_ROOT/_comparisons/$RUN_NAME"
+    --out-dir "$COMPARISON_DIR"
 
   "$ANALYSIS_PYTHON_BIN" scripts/analysis/plot_vocalgrad_finetune_generalization_heatmaps.py \
     --root "$ANALYSIS_ROOT" \
     --run-name "$RUN_NAME" \
-    --comparison-dir "$ANALYSIS_ROOT/_comparisons/$RUN_NAME"
+    --comparison-dir "$COMPARISON_DIR"
 fi

@@ -25,6 +25,16 @@ def parse_direction_label(raw):
     return next(iter(labels)) if len(labels) == 1 else None
 
 
+def should_retry_direction_response(raw):
+    """Retry only when no accepted direction word occurs.
+
+    Retry eligibility is separate from scoring: ambiguous answers are always
+    unparsed in the final metrics, even when they do not trigger another call.
+    """
+    labels = parse_labels(raw)
+    return not labels
+
+
 def parse_paraphrase_label(raw):
     labels = parse_labels(raw, True)
     return next(iter(labels)) if len(labels) == 1 else None

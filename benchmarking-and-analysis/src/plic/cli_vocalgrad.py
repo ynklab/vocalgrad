@@ -58,7 +58,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--retry-max-new-tokens",
         type=int,
         default=256,
-        help="If the first response is unparsable, retry once with the same prompt and this max token budget.",
+        help="If the first response contains no accepted direction word, retry once with the same prompt and this max token budget.",
     )
     parser.add_argument(
         "--temperature",
@@ -191,7 +191,7 @@ def default_temperature(backend: str, model_id: str) -> float:
     return 0.0
 
 
-from .direction_evaluation import parse_direction_label
+from .direction_evaluation import parse_direction_label, should_retry_direction_response
 
 
 def maybe_retry_same_prompt(
@@ -206,7 +206,7 @@ def maybe_retry_same_prompt(
     interleaved_parts: list[dict[str, object]] | None = None,
 ) -> tuple[str | None, str]:
     pred = parse_direction_label(raw_text)
-    if pred is not None:
+    if not should_retry_direction_response(raw_text):
         return pred, raw_text
 
     if interleaved_parts is not None:
@@ -239,7 +239,7 @@ async def maybe_retry_same_prompt_async(
     interleaved_parts: list[dict[str, object]] | None = None,
 ) -> tuple[str | None, str]:
     pred = parse_direction_label(raw_text)
-    if pred is not None:
+    if not should_retry_direction_response(raw_text):
         return pred, raw_text
 
     if interleaved_parts is not None:

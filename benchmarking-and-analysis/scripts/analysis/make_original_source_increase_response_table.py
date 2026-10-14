@@ -254,7 +254,7 @@ def collect_source_rates(root: Path, excluded_categories: set[str]) -> dict[str,
         for category, summary in category_summary.items():
             if category in excluded_categories:
                 continue
-            rate = summary.get("preferred_increase_rate")
+            rate = summary.get("parsed_preferred_increase_rate")
             if rate is None:
                 continue
             rates.setdefault(model, {})[category] = float(rate)
