@@ -78,6 +78,7 @@ Important outputs:
 
 Paper target:
 - Section 4.3
+- Appendix B.6: Synthetic-Signal Ablation Setup
 - Table 3
 
 Primary commands:
@@ -89,6 +90,20 @@ bash scripts/reproduce/02_ablation_beep.sh BACKEND=stepaudio2
 bash scripts/reproduce/02_ablation_beep.sh BACKEND=audioflamingo3
 bash scripts/reproduce/02_ablation_beep.sh BACKEND=gemini
 ```
+
+The ten source signals are pure sine waves at 700–2,050 Hz in 150-Hz
+increments, with peak amplitude 0.65. Each lasts 3.6 seconds: 0.75 seconds
+of leading silence, 2.1 seconds of active signal, and 0.75 seconds of trailing
+silence. The four categories use the speech benchmark's augmentation code and
+intensity settings, with two directions, three tiers, and four trajectories
+per source (240 clips per category).
+
+For the Table 3 Gemini result, the wrapper uses the `audio_ref` question:
+`Does the {attribute} of this audio clip increase or decrease over time?`
+The other models use `Does the {attribute} increase or decrease over time?`.
+Both end with `Answer with only one word: "increase" or "decrease".`
+No system prompt is used. As discussed in Appendix B.6, the Gemini comparison
+between speech and synthetic signals also involves a prompt-wording difference.
 
 Important inputs:
 - `datasets/vocalgrad/ablation_beep/`
