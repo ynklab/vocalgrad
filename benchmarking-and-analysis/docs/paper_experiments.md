@@ -78,7 +78,6 @@ Important outputs:
 
 Paper target:
 - Section 4.3
-- Appendix B.6: Synthetic-Signal Ablation Setup
 - Table 3
 
 Primary commands:
@@ -98,12 +97,10 @@ silence. The four categories use the speech benchmark's augmentation code and
 intensity settings, with two directions, three tiers, and four trajectories
 per source (240 clips per category).
 
-For the Table 3 Gemini result, the wrapper uses the `audio_ref` question:
-`Does the {attribute} of this audio clip increase or decrease over time?`
-The other models use `Does the {attribute} increase or decrease over time?`.
-Both end with `Answer with only one word: "increase" or "decrease".`
-No system prompt is used. As discussed in Appendix B.6, the Gemini comparison
-between speech and synthetic signals also involves a prompt-wording difference.
+All models use the same prompt as the main benchmark:
+`Does the {attribute} increase or decrease over time?`
+followed by `Answer with only one word: "increase" or "decrease".`
+No system prompt is used.
 
 Important inputs:
 - `datasets/vocalgrad/ablation_beep/`

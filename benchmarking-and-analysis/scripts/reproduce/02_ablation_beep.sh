@@ -39,11 +39,6 @@ cmd=(
   --concurrency "$CONCURRENCY"
 )
 
-# Table 3 uses the audio_ref question for Gemini (Appendix B.6).
-if [[ "$BACKEND" == "gemini" ]]; then
-  cmd+=(--explicit-audio-clip-reference)
-fi
-
 if [[ -n "$MAX_SAMPLES" ]]; then
   cmd+=(--max-samples "$MAX_SAMPLES")
 fi
