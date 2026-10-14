@@ -75,3 +75,8 @@ for commands and table/figure mappings, and
 for scoring rules and result aggregation.
 The [alternate-source guide](data-and-annotation/docs/alternate_sources.md)
 describes the frozen source selections.
+
+## License
+
+The code is licensed under the [MIT License](LICENSE). The VocalGrad dataset is
+licensed separately under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
