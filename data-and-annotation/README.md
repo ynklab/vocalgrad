@@ -153,8 +153,12 @@ unmodified test sources into the evaluation directory, see
 ## Human Annotation
 
 The annotation interface and shared 50-item manifests are in `annotation_tool/`.
-The annotation subset is balanced over source clips, tiers, trajectories, and
-directions. The tool records binary labels, response time, and replay count.
+Each category has 50 clips with equal numbers of increasing and decreasing
+examples and approximately balanced intensity tiers and trajectories. The
+sampling procedure couples direction and trajectory: `linear` and
+`quad_last_flat` occur only with increasing, and `jump` and `quad_first_flat`
+only with decreasing. These manifests reproduce the reported human subset;
+trajectory-wise results cannot isolate trajectory effects from direction effects. The tool records binary labels, response time, and replay count.
 
 See [annotation_tool/README.md](annotation_tool/README.md) for local setup and
 usage details.

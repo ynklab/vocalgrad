@@ -45,6 +45,11 @@ Current selection rule:
 - the same `(source clip, difficulty, trajectory)` assignments are reused across all categories
 - `difficulty x trajectory` is balanced as evenly as possible across 50 items
 - `increase / decrease` is balanced overall
+- direction and trajectory are coupled by the sampling implementation:
+  `linear` / `quad_last_flat` occur only with increase, while `jump` /
+  `quad_first_flat` occur only with decrease. These assignments reproduce the
+  paper's human subset; trajectory-wise accuracy does not isolate trajectory
+  effects from direction effects.
 
 Reference lists:
 
