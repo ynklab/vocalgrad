@@ -42,16 +42,20 @@ def build_parser() -> argparse.ArgumentParser:
 
 def display_model_name(model_name: str) -> str:
     names = {
-        "audioflamingo3": "AudioFlamingo3",
+        "audioflamingo3": "Audio Flamingo 3",
         "kimi-audio": "Kimi-Audio",
         "mimo-audio": "MiMo-Audio",
-        "step-audio-2-mini": "Step-Audio-2 Mini",
+        "step-audio-2-mini": "Step-Audio 2 mini",
     }
     return names.get(model_name, model_name.replace("-", " ").title())
 
 
 def display_category_name(category_name: str) -> str:
-    return category_name.replace("_", " ")
+    names = {"speaking_speed": "speed", "voice_pitch": "pitch", "volume": "volume",
+             "audio_distortion": "distortion", "audio_roughness": "roughness",
+             "background_noise": "noise", "echo": "echo", "voice_clarity": "clarity",
+             "voice_vibration": "vibration"}
+    return names.get(category_name, category_name.replace("_", " "))
 
 
 def resolve_model_max_layer(df: pd.DataFrame, model_name: str) -> int | None:
@@ -205,6 +209,9 @@ def draw_category_overview(
     palette = sns.color_palette("tab10", n_colors=max(1, subset["category"].nunique()))
     category_order = sorted(subset["category"].unique().tolist())
     color_map = {category: palette[idx] for idx, category in enumerate(category_order)}
+    paper_order = ["speaking_speed", "voice_pitch", "volume", "audio_distortion",
+                   "audio_roughness", "background_noise", "echo", "voice_clarity", "voice_vibration"]
+    category_order = [c for c in paper_order if c in category_order] + [c for c in category_order if c not in paper_order]
 
     fig, axes = plt.subplots(1, len(models), figsize=(width, height), sharex=False, sharey=True)
     axes_list = [axes] if len(models) == 1 else list(axes.flat)
@@ -252,6 +259,11 @@ def draw_category_overview(
         ax.axis("off")
 
     if legend_handles and legend_labels:
+        # Matplotlib fills legend columns first; reorder for row-wise reading.
+        ncols = min(5, len(legend_labels))
+        legend_indices = [i for col in range(ncols) for i in range(col, len(legend_labels), ncols)]
+        legend_handles = [legend_handles[i] for i in legend_indices]
+        legend_labels = [legend_labels[i] for i in legend_indices]
         legend_obj = fig.legend(
             legend_handles,
             legend_labels,

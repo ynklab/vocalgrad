@@ -47,7 +47,7 @@ fig, axs = plt.subplots(1, 3, figsize=(14, 5), layout="constrained")
 for i, ax in enumerate(axs):
     im = ax.imshow(x[i, -1], vmin=-1, vmax=1, cmap="RdBu_r")
     ax.set_title(
-        ["Base", "Volume-tuned", "Pitch-tuned"][i], fontsize=16, fontweight="bold"
+        ["Base", "Volume-tuned", "Voice-Pitch-tuned"][i], fontsize=16, fontweight="bold"
     )
     ax.set_xticks(range(9), labels, rotation=90, fontsize=11, fontweight="bold")
     ax.set_yticks(range(9), labels, fontsize=11, fontweight="bold")

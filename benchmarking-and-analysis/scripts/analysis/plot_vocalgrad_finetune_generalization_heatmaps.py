@@ -26,8 +26,8 @@ DISPLAY_CATEGORY_NAMES = {
 }
 
 DISPLAY_SCOPE_NAMES = {
-    "all_linear": "All-Linear LoRA Fine-Tuned Model",
-    "lm_head_only": "LM-Head-Only LoRA Fine-Tuned Model",
+    "all_linear": "All-Linear LoRA Fine-Tuning",
+    "lm_head_only": "LM-Head-Only LoRA Fine-Tuning",
 }
 ACCURACY_CMAP = LinearSegmentedColormap.from_list(
     "accuracy_neutral",
@@ -45,6 +45,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--run-name", default="default")
     parser.add_argument("--comparison-dir", type=Path, default=None)
     parser.add_argument("--dataset-root", type=Path, default=Path("datasets/vocalgrad/test"))
+    parser.add_argument("--accuracy-title", default=None)
     parser.add_argument("--font-size", type=float, default=20.0)
     parser.add_argument("--font-weight", default="bold")
     parser.add_argument("--exclude-category", action="append", default=DEFAULT_EXCLUDED_CATEGORIES.copy())
@@ -79,15 +80,15 @@ def _plot_heatmap(
             if bool(missing_mask.loc[row_label, col_label]):
                 annotations.loc[row_label, col_label] = "NA"
             else:
-                annotations.loc[row_label, col_label] = f"{float(pivot.loc[row_label, col_label]):.2f}"
+                annotations.loc[row_label, col_label] = ("100" if round(100 * float(pivot.loc[row_label, col_label]), 1) == 100.0 else f"{100 * float(pivot.loc[row_label, col_label]):.1f}")
     plt.figure(figsize=(10.5, 8.0))
     ax = sns.heatmap(
-        pivot,
+        pivot * 100,
         annot=annotations,
         fmt="",
         cmap=ACCURACY_CMAP,
         vmin=0.0,
-        vmax=1.0,
+        vmax=100.0,
         annot_kws={"size": font_size * 0.8, "weight": font_weight},
         cbar_kws={"fraction": 0.035, "pad": 0.02, "aspect": 28, "shrink": 0.82},
         square=True,
@@ -104,6 +105,7 @@ def _plot_heatmap(
     ax.yaxis.label.set_size(font_size)
     ax.title.set_size(font_size)
     cbar = ax.collections[0].colorbar
+    cbar.set_label("Accuracy (%)", fontsize=font_size, fontweight=font_weight)
     cbar.ax.tick_params(labelsize=font_size)
     for label in cbar.ax.get_yticklabels():
         label.set_fontweight(font_weight)
@@ -198,6 +200,8 @@ def main() -> None:
             ~df["train_category"].isin(excluded_categories) & ~df["test_category"].isin(excluded_categories)
         ].copy()
         categories = [category for category in categories if category not in excluded_categories]
+    paper_order = list(DISPLAY_CATEGORY_NAMES)
+    categories = [c for c in paper_order if c in categories] + [c for c in categories if c not in paper_order]
     for scope in sorted(df["scope"].unique()):
         scope_df = df[df["scope"] == scope].copy()
         scope_name = _display_scope_name(scope)
@@ -213,7 +217,7 @@ def main() -> None:
         _plot_heatmap(
             scope_df,
             "accuracy",
-            f"{scope_name} Accuracy",
+            args.accuracy_title or f"{scope_name} Accuracy",
             out_dir / f"accuracy__{scope}",
             categories,
             args.font_size,

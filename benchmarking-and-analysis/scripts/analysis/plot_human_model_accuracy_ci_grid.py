@@ -56,11 +56,11 @@ CATEGORY_TITLES = {
 
 MODEL_DISPLAY_NAMES = {
     "human": "Human",
-    "audioflamingo3": "AudioFlamingo3",
+    "audioflamingo3": "Audio Flamingo 3",
     "gemini-3-flash": "Gemini 3 Flash",
     "kimi-audio": "Kimi-Audio",
     "mimo-audio": "MiMo-Audio",
-    "step-audio-2-mini": "Step-Audio-2 Mini",
+    "step-audio-2-mini": "Step-Audio 2 mini",
 }
 
 

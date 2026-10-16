@@ -134,16 +134,16 @@ def _plot_heatmap(
             if bool(missing_mask.loc[row_label, col_label]):
                 annotations.loc[row_label, col_label] = "NA"
             else:
-                annotations.loc[row_label, col_label] = f"{float(pivot.loc[row_label, col_label]):.2f}"
+                annotations.loc[row_label, col_label] = ("100" if round(100 * float(pivot.loc[row_label, col_label]), 1) == 100.0 else f"{100 * float(pivot.loc[row_label, col_label]):.1f}")
 
     plt.figure(figsize=(10.5, 8.0))
     ax = sns.heatmap(
-        pivot,
+        pivot * 100,
         annot=annotations,
         fmt="",
         cmap=ACCURACY_CMAP,
         vmin=0.0,
-        vmax=1.0,
+        vmax=100.0,
         annot_kws={"size": font_size * 0.8, "weight": font_weight},
         cbar_kws={"fraction": 0.035, "pad": 0.02, "aspect": 28, "shrink": 0.82},
         square=True,
@@ -160,6 +160,7 @@ def _plot_heatmap(
     ax.yaxis.label.set_size(font_size)
     ax.title.set_size(font_size)
     cbar = ax.collections[0].colorbar
+    cbar.set_label("Accuracy (%)", fontsize=font_size, fontweight=font_weight)
     cbar.ax.tick_params(labelsize=font_size)
     for label in cbar.ax.get_yticklabels():
         label.set_fontweight(font_weight)
@@ -213,6 +214,8 @@ def main() -> None:
         ]
         categories = [category for category in categories if category not in excluded_categories]
 
+    paper_order = list(DISPLAY_CATEGORY_NAMES)
+    categories = [c for c in paper_order if c in categories] + [c for c in categories if c not in paper_order]
     df = pd.DataFrame(records)
     models = sorted(args.model or df["model"].unique())
     for model in models:

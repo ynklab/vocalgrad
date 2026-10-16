@@ -21,10 +21,10 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 
 DEFAULT_MODEL_ORDER = [
-    "audioflamingo3",
     "kimi-audio",
     "mimo-audio",
     "step-audio-2-mini",
+    "audioflamingo3",
 ]
 DEFAULT_STAGE_ORDER = ["mel", "pre_lm_audio", "lm_audio"]
 DEFAULT_EXCLUDED_CATEGORIES: list[str] = []
@@ -74,10 +74,10 @@ def parse_args() -> argparse.Namespace:
 
 def display_model_name(model: str) -> str:
     names = {
-        "audioflamingo3": "AudioFlamingo3",
+        "audioflamingo3": "Audio Flamingo 3",
         "kimi-audio": "Kimi-Audio",
         "mimo-audio": "MiMo-Audio",
-        "step-audio-2-mini": "Step-Audio-2 Mini",
+        "step-audio-2-mini": "Step-Audio 2 mini",
     }
     return names.get(model, model.replace("-", " ").title())
 
@@ -139,7 +139,9 @@ def category_order(rows: list[dict[str, str]], excluded_categories: set[str]) ->
         if not category or category in excluded_categories or category in seen:
             continue
         seen.append(category)
-    return seen
+    paper_order = ["speaking_speed", "voice_pitch", "volume", "audio_distortion",
+                   "audio_roughness", "background_noise", "echo", "voice_clarity", "voice_vibration"]
+    return [c for c in paper_order if c in seen] + [c for c in seen if c not in paper_order]
 
 
 def summarize_by_category(
@@ -292,7 +294,11 @@ def plot_lines(
 
 
 def display_category(category: str) -> str:
-    return category.replace("_", " ")
+    names = {"speaking_speed": "speed", "voice_pitch": "pitch", "volume": "volume",
+             "audio_distortion": "distortion", "audio_roughness": "roughness",
+             "background_noise": "noise", "echo": "echo", "voice_clarity": "clarity",
+             "voice_vibration": "vibration"}
+    return names.get(category, category.replace("_", " "))
 
 
 def category_values(

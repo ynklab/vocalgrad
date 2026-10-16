@@ -124,6 +124,8 @@ def draw_selected_panels(
     category_order = sorted(subset["category"].unique().tolist())
     palette = sns.color_palette("tab10", n_colors=max(1, len(category_order)))
     color_map = {category: palette[idx] for idx, category in enumerate(category_order)}
+    paper_order = list(DISPLAY_CATEGORY_NAMES)
+    category_order = [c for c in paper_order if c in category_order] + [c for c in category_order if c not in paper_order]
 
     fig, axes = plt.subplots(1, len(models), figsize=(width, height), sharey=True)
     if len(models) == 1:
@@ -171,6 +173,10 @@ def draw_selected_panels(
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
+    # Matplotlib fills columns first; present categories in row-wise paper order.
+    indices = [i for col in range(3) for i in range(col, len(legend_labels), 3)]
+    legend_handles = [legend_handles[i] for i in indices]
+    legend_labels = [legend_labels[i] for i in indices]
     legend_obj = fig.legend(
         legend_handles,
         legend_labels,
